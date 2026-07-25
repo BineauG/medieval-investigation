@@ -1,0 +1,249 @@
+{
+  "medieval-investigation-toolkit": {
+    "Actions": {
+      "AddToFaction": "Ajouter à la faction",
+      "AddToBoard": "Ajouter au panneau d’enquête",
+      "BringFront": "Mettre au premier plan",
+      "Browse": "Parcourir",
+      "Cancel": "Annuler",
+      "Delete": "Supprimer",
+      "Duplicate": "Dupliquer",
+      "Edit": "Modifier",
+      "Export": "Exporter",
+      "Import": "Importer",
+      "OpenSource": "Ouvrir le document source",
+      "Redo": "Rétablir",
+      "RemoveFromFaction": "Retirer de la faction",
+      "Reset": "Rétablir la source",
+      "Save": "Enregistrer",
+      "SendBack": "Mettre à l’arrière-plan",
+      "Undo": "Annuler"
+    },
+    "Board": {
+      "AddedToBoard": "{name} a été ajouté au panneau d’enquête.",
+      "ConnectSeal": "Sceau de cire — créer une connexion",
+      "ConnectionHelp": "Mode connexion actif : cliquez successivement deux sceaux, ou utilisez Maj + glisser. Clic sur une ficelle : sélectionner ; Suppr : effacer ; double-clic : changer la couleur. Échap annule."
+    },
+    "CardEditor": {
+      "Actor": "Acteur source",
+      "ImageOverride": "Image locale",
+      "ReferenceImage": "Image de référence et fond",
+      "ShowImage": "Afficher l’image",
+      "ShowName": "Afficher le nom",
+      "SourceUuid": "Référence Foundry facultative (UUID)",
+      "Tags": "Tags",
+      "Title": "Carte d’enquête",
+      "TitleOverride": "Titre local",
+      "Type": "Type de carte"
+    },
+    "CardTypes": {
+      "Actor": "Acteur",
+      "Document": "Document",
+      "Free": "Note"
+    },
+    "CardTags": {
+      "Dead": "Mort"
+    },
+    "NoteEditor": {
+      "Title": "Modifier la note",
+      "Text": "Texte court",
+      "Hint": "Saisissez un ou deux mots, puis appuyez sur Entrée."
+    },
+    "Confirm": {
+      "DeleteCardTitle": "Supprimer une carte reliée",
+      "DeleteConnectedCard": "Cette carte possède {count} connexion(s). La carte et toutes ses ficelles seront supprimées.",
+      "DeleteRelationLabel": "Cette étiquette sera retirée de la liste et tous les liens qui l’utilisent seront supprimés.",
+      "DeleteRelationLabelTitle": "Supprimer l’étiquette de lien"
+    },
+    "ConnectionEditor": {
+      "Color": "Couleur de la ficelle",
+      "Sag": "Affaissement",
+      "Title": "Modifier la ficelle",
+      "Width": "Épaisseur"
+    },
+    "ConnectionColors": {
+      "Red": "Rouge",
+      "Blue": "Bleu",
+      "Yellow": "Jaune",
+      "Green": "Vert",
+      "Purple": "Pourpre",
+      "Black": "Noir",
+      "White": "Blanc",
+      "Gray": "Gris",
+      "Orange": "Orange"
+    },
+    "Controls": {
+      "ActorCard": "Créer une carte Acteur",
+      "Connections": "Créer ou gérer les connexions",
+      "DocumentCard": "Créer une carte Document",
+      "FreeCard": "Créer une note",
+      "RelationGraph": "Ouvrir le graphe de relations",
+      "ToggleBoard": "Activer ou désactiver le panneau d’enquête"
+    },
+    "Errors": {
+      "ActorRequired": "Cette opération nécessite un Actor accessible.",
+      "AudioUnsupported": "Les contenus audio ne sont pas pris en charge par le panneau d’enquête.",
+      "BoardUnavailable": "Cette scène n’est pas un panneau d’enquête actif.",
+      "CardMissing": "La carte demandée n’existe plus.",
+      "ConnectionMissing": "La connexion demandée n’existe plus.",
+      "CorruptGraph": "Les données du graphe sont corrompues. Une copie vide est affichée ; importez une sauvegarde valide ou réparez les flags.",
+      "DuplicateConnection": "Ces deux cartes sont déjà reliées.",
+      "EditConflict": "Cet élément a été modifié par un autre utilisateur. Rouvrez son éditeur avant de recommencer.",
+      "GMOnly": "Cette action est réservée au MJ.",
+      "GraphConflict": "Le graphe a été modifié par un autre utilisateur. Rouvrez-le avant de recommencer.",
+      "GraphMissing": "La page de stockage du graphe est introuvable.",
+      "GraphNotCreated": "Le graphe n’a pas encore été initialisé. Un MJ doit l’ouvrir une première fois.",
+      "InvalidCard": "Les données de la carte sont invalides.",
+      "InvalidConnection": "La connexion est invalide.",
+      "InvalidGraph": "Les données du graphe sont invalides.",
+      "InvalidGraphImport": "Le fichier JSON ne contient pas un graphe de relations valide.",
+      "InvalidUuid": "Le document source est introuvable ou son UUID est invalide.",
+      "NoActiveGM": "Aucun MJ actif ne peut enregistrer cette modification.",
+      "PermissionDenied": "Vous ne disposez pas de la permission nécessaire.",
+      "RequestRejected": "La modification a été refusée par le client MJ.",
+      "RequestTimeout": "Le MJ n’a pas répondu à temps. Aucune modification locale n’a été conservée.",
+      "SelfConnection": "Un élément ne peut pas être relié à lui-même.",
+      "VideoUnsupported": "Les contenus vidéo ne sont pas pris en charge dans cette version."
+    },
+    "FactionEditor": {
+      "Description": "Description",
+      "Fill": "Fond",
+      "Height": "Hauteur",
+      "Members": "Membres explicites",
+      "Name": "Nom",
+      "Opacity": "Opacité",
+      "Shape": "Forme fermée",
+      "Stroke": "Bordure",
+      "StrokeWidth": "Épaisseur",
+      "Title": "Faction",
+      "Width": "Largeur"
+    },
+    "CustomNodeEditor": {
+      "Browse": "Parcourir les assets",
+      "Create": "Créer le nœud",
+      "Image": "Image",
+      "Name": "Nom",
+      "Title": "Nouveau nœud"
+    },
+    "Graph": {
+      "AriaLabel": "Canevas du graphe de relations",
+      "DefaultName": "Relations",
+      "Fit": "Ajuster",
+      "Help": "Déposez un Actor ici ou utilisez Nouveau nœud. Maj + glisser d’un nœud vers un autre : créer une relation directionnelle. Molette : zoom. Glisser le fond : déplacer la vue. Maj + glisser une faction : déplacer uniquement sa forme.",
+      "NewNode": "Nouveau nœud",
+      "NewFaction": "Nouvelle faction",
+      "NewRelation": "Nouvelle relation",
+      "ResizeFaction": "Redimensionner la faction",
+      "Saved": "Enregistré",
+      "Saving": "Enregistrement…",
+      "Select": "Sélectionner",
+      "StorageJournalName": "[MIT] Graphe de relations",
+      "Toolbar": "Outils du graphe",
+      "UnlabelledRelation": "Relation sans libellé",
+      "Unsaved": "Modifications non enregistrées",
+      "WindowTitle": "Graphe de relations"
+    },
+    "Labels": {
+      "ContextMenu": "Menu contextuel",
+      "MissingReference": "Référence manquante",
+      "NoteDefault": "NOTE",
+      "UnknownIdentity": "Identité inconnue",
+      "Untitled": "Sans titre"
+    },
+    "LineStyles": {
+      "Dashed": "Tirets",
+      "Dotted": "Pointillés",
+      "Solid": "Continu"
+    },
+    "NodeEditor": {
+      "Dead": "Mort",
+      "DisplayName": "Nom affiché",
+      "HideAppearance": "Masquer l’apparence",
+      "HideName": "Masquer le nom",
+      "Title": "Modifier le personnage",
+      "UnknownName": "Inconnu"
+    },
+    "RelationEditor": {
+      "Color": "Couleur",
+      "DeleteLabel": "Supprimer cette étiquette et ses liens",
+      "Directed": "Relation directionnelle",
+      "Label": "Libellé",
+      "LabelPosition": "Position du libellé",
+      "LineStyle": "Style de ligne",
+      "Mutual": "Relation mutuelle",
+      "NewLabel": "＋ Nouvelle étiquette…",
+      "NewLabelName": "Nom de la nouvelle étiquette",
+      "Title": "Relation",
+      "Width": "Épaisseur"
+    },
+    "Relations": {
+      "alliedWith": "Allié de",
+      "benefitsFrom": "Profite de",
+      "controls": "Contrôle",
+      "defends": "Défend",
+      "dependsOn": "Dépend de",
+      "enemyOf": "Ennemi de",
+      "favorableTo": "Favorable à",
+      "fights": "Combat",
+      "killed": "A tué",
+      "finances": "Finance",
+      "friend": "Ami",
+      "hides": "Cache",
+      "influences": "Influence",
+      "investigates": "Enquête sur",
+      "knowsSecretOf": "Connaît le secret de",
+      "lover": "Amant",
+      "manipulates": "Manipule",
+      "marriedTo": "Marié à",
+      "memberOf": "Est membre de",
+      "opposedTo": "Opposé à",
+      "parentOf": "Parent de",
+      "protects": "Protège",
+      "represents": "Représente",
+      "rivalOf": "Rival de",
+      "serves": "Sert",
+      "suffers": "Subit",
+      "supports": "Soutient",
+      "watches": "Surveille",
+      "worksFor": "Travaille pour"
+    },
+    "SceneConfig": {
+      "BoardEnabled": "Panneau d’enquête médiéval",
+      "BoardEnabledHint": "Affiche les outils de cartes et de ficelles sur cette scène."
+    },
+    "Settings": {
+      "Assets": { "Name": "Assets du panneau", "Label": "Configurer les images", "Hint": "Choisissez des images depuis le FilePicker Foundry. Un champ vide conserve le rendu CSS/SVG intégré." },
+      "AutoSaveGraph": { "Name": "Sauvegarde automatique du graphe", "Hint": "Enregistre le graphe après le délai configuré." },
+      "CardScale": { "Name": "Échelle globale des cartes", "Hint": "Facteur appliqué aux nouvelles cartes et au rendu du panneau." },
+      "DebugLogging": { "Name": "Logs détaillés", "Hint": "Active les journaux de diagnostic préfixés du module." },
+      "DeathOverlayOpacity": { "Name": "Opacité du tag Mort", "Hint": "Règle la transparence du crâne superposé aux portraits et aux tokens marqués Mort." },
+      "DeathTagImage": { "Name": "Cachet du tag Mort", "Directory": "Déposez vos images de cachet Mort dans :" },
+      "EdgeColor": { "Name": "Couleur par défaut des relations", "Hint": "Couleur utilisée pour les nouvelles relations du graphe." },
+      "EdgeWidth": { "Name": "Épaisseur par défaut des relations", "Hint": "Épaisseur utilisée pour les nouvelles relations du graphe." },
+      "FactionFill": { "Name": "Couleur par défaut des factions", "Hint": "Couleur de fond et de bordure proposée pour une faction." },
+      "FactionOpacity": { "Name": "Opacité par défaut des factions", "Hint": "Opacité du fond des nouvelles factions." },
+      "MinimumCardSize": { "Name": "Taille minimale des cartes", "Hint": "Largeur et hauteur minimales en pixels de scène." },
+      "NodeSize": { "Name": "Taille par défaut des personnages", "Hint": "Largeur de départ d’un personnage déposé dans le graphe." },
+      "NoteBannerImage": { "Name": "Image du fanion de note", "Directory": "Déposez vos images de languette ou fanion dans :" },
+      "NoteTextDirection": { "Name": "Sens de lecture des notes", "Hint": "Choisit le côté vers lequel le lecteur incline la tête pour lire le texte vertical.", "Right": "Incliné vers la droite", "Left": "Incliné vers la gauche" },
+      "ParchmentTexture": { "Name": "Texture de parchemin", "Directory": "Déposez vos images de parchemin dans :" },
+      "PlayersCreateCards": { "Name": "Joueurs : créer des cartes", "Hint": "Autorise les joueurs à créer des cartes sur une scène panneau." },
+      "PlayersCreateConnections": { "Name": "Joueurs : créer des connexions", "Hint": "Autorise les joueurs à créer, modifier et supprimer des ficelles." },
+      "PlayersEditGraph": { "Name": "Joueurs : modifier le graphe", "Hint": "Autorise les joueurs à modifier le graphe persistant via le MJ actif." },
+      "PlayersEditOwnCards": { "Name": "Joueurs : modifier leurs cartes", "Hint": "Autorise un joueur à modifier ou supprimer les cartes qu’il a créées." },
+      "PlayersMoveCards": { "Name": "Joueurs : déplacer les cartes", "Hint": "Autorise les joueurs à déplacer et redimensionner les cartes." },
+      "SaveDebounce": { "Name": "Délai de sauvegarde du graphe", "Hint": "Délai en millisecondes avant une sauvegarde automatique." },
+      "StringColor": { "Name": "Couleur de ficelle", "Hint": "Couleur par défaut des nouvelles ficelles dans la palette WFRP." },
+      "StringWidth": { "Name": "Épaisseur de ficelle", "Hint": "Épaisseur par défaut des nouvelles ficelles." },
+      "UnknownActorImage": { "Name": "Silhouette générique", "Hint": "Image utilisée lorsque l’apparence d’un personnage est masquée." },
+      "WaxSealImage": { "Name": "Image personnalisée du sceau", "Directory": "Déposez vos images de sceau dans :" },
+      "AnonymizeUnauthorized": { "Name": "Anonymiser les documents interdits", "Hint": "Masque les informations privées dans le graphe lorsqu’un utilisateur ne peut pas observer la source. Les cases d’affichage d’une carte partagent explicitement son titre et son image." },
+      "ConfirmDelete": { "Name": "Confirmer la suppression reliée", "Hint": "Demande confirmation avant de supprimer une carte possédant des ficelles." }
+    },
+    "Shapes": {
+      "Ellipse": "Ellipse",
+      "Polygon": "Polygone",
+      "RoundedRectangle": "Rectangle arrondi"
+    }
+  }
+}
