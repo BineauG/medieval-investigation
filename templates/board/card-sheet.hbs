@@ -1,0 +1,60 @@
+<div class="mit-form-content">
+<div class="mit-form-body">
+  {{#if isGM}}
+  {{#unless editing}}<div class="form-group">
+    <label for="mit-card-type">{{localize "medieval-investigation-toolkit.CardEditor.Type"}}</label>
+    <select id="mit-card-type" name="cardType">
+      <option value="actor" {{#if isActor}}selected{{/if}}>{{localize "medieval-investigation-toolkit.CardTypes.Actor"}}</option>
+      <option value="document" {{#if isDocument}}selected{{/if}}>{{localize "medieval-investigation-toolkit.CardTypes.Document"}}</option>
+    </select>
+  </div>{{/unless}}
+  {{#if isActor}}
+  <div class="form-group">
+    <label for="mit-card-actor">{{localize "medieval-investigation-toolkit.CardEditor.Actor"}}</label>
+    <select id="mit-card-actor" name="actorUuid" required>
+      <option value="">—</option>
+      {{#each actors}}<option value="{{uuid}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}
+    </select>
+  </div>
+  {{else if isDocument}}
+  <div class="form-group">
+    <label for="mit-card-source">{{localize "medieval-investigation-toolkit.CardEditor.SourceUuid"}}</label>
+    <input id="mit-card-source" type="text" name="sourceUuid" value="{{card.sourceUuid}}" placeholder="Item.x / JournalEntry.x.JournalEntryPage.x">
+    {{#if sourceName}}<p class="hint">{{sourceName}}</p>{{/if}}
+    {{#if sourceMissing}}<p class="warning">{{localize "medieval-investigation-toolkit.Labels.MissingReference"}}</p>{{/if}}
+  </div>
+  {{/if}}
+  {{/if}}
+  <div class="form-group">
+    <label for="mit-card-title">{{localize "medieval-investigation-toolkit.CardEditor.TitleOverride"}}</label>
+    <div class="form-fields">
+      <input id="mit-card-title" type="text" name="titleOverride" value="{{card.titleOverride}}">
+      <button type="button" data-action="reset-title" aria-label="{{localize 'medieval-investigation-toolkit.Actions.Reset'}}"><i class="fa-solid fa-rotate-left"></i></button>
+    </div>
+  </div>
+  {{#if isActor}}<fieldset class="mit-card-tags">
+    <legend>{{localize "medieval-investigation-toolkit.CardEditor.Tags"}}</legend>
+    <label><input type="checkbox" name="dead" {{checked isDead}}> {{localize "medieval-investigation-toolkit.CardTags.Dead"}}</label>
+  </fieldset>{{/if}}
+  {{#if isGM}}
+  <div class="form-group">
+    <label for="mit-card-image">{{#if isDocument}}{{localize "medieval-investigation-toolkit.CardEditor.ReferenceImage"}}{{else}}{{localize "medieval-investigation-toolkit.CardEditor.ImageOverride"}}{{/if}}</label>
+    <div class="form-fields">
+      <input id="mit-card-image" type="text" name="imageOverride" value="{{card.imageOverride}}">
+      <button type="button" data-action="browse-image" aria-label="{{localize 'medieval-investigation-toolkit.Actions.Browse'}}"><i class="fa-solid fa-folder-open"></i></button>
+      <button type="button" data-action="reset-image" aria-label="{{localize 'medieval-investigation-toolkit.Actions.Reset'}}"><i class="fa-solid fa-rotate-left"></i></button>
+    </div>
+  </div>
+  {{#if previewImage}}
+  <div class="mit-card-editor-preview-wrap">
+    <img class="mit-card-editor-preview" data-card-image-preview src="{{previewImage}}" alt="">
+  </div>
+  {{/if}}
+  <div class="form-group">
+    <label><input type="checkbox" name="showName" {{checked card.showName}}> {{localize "medieval-investigation-toolkit.CardEditor.ShowName"}}</label>
+    <label><input type="checkbox" name="showImage" {{checked card.showImage}}> {{localize "medieval-investigation-toolkit.CardEditor.ShowImage"}}</label>
+  </div>
+  {{/if}}
+</div>
+<footer class="form-footer"><button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "medieval-investigation-toolkit.Actions.Save"}}</button></footer>
+</div>
