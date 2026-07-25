@@ -1,0 +1,182 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+
+test("the board uses a Drawing subclass and no longer imports the overlay renderer", () => {
+  const main = fs.readFileSync(new URL("../scripts/main.js", import.meta.url), "utf8");
+  const tools = fs.readFileSync(new URL("../scripts/board/board-tools.js", import.meta.url), "utf8");
+  const drawing = fs.readFileSync(new URL("../scripts/board/board-drawing.js", import.meta.url), "utf8");
+  const connections = fs.readFileSync(new URL("../scripts/board/board-connection-layer.js", import.meta.url), "utf8");
+  const controller = fs.readFileSync(new URL("../scripts/board/board-controller.js", import.meta.url), "utf8");
+  const cardSheet = fs.readFileSync(new URL("../scripts/board/board-card-sheet.js", import.meta.url), "utf8");
+  const cardTemplate = fs.readFileSync(new URL("../templates/board/card-sheet.hbs", import.meta.url), "utf8");
+  const noteSheet = fs.readFileSync(new URL("../scripts/board/board-note-sheet.js", import.meta.url), "utf8");
+  const noteTemplate = fs.readFileSync(new URL("../templates/board/note-sheet.hbs", import.meta.url), "utf8");
+  const connectionTemplate = fs.readFileSync(new URL("../templates/board/connection-sheet.hbs", import.meta.url), "utf8");
+  const settings = fs.readFileSync(new URL("../scripts/settings.js", import.meta.url), "utf8");
+  const sockets = fs.readFileSync(new URL("../scripts/board/board-sockets.js", import.meta.url), "utf8");
+  const assetTemplate = fs.readFileSync(new URL("../templates/settings-assets.hbs", import.meta.url), "utf8");
+  const css = fs.readFileSync(new URL("../styles/medieval-investigation-toolkit.css", import.meta.url), "utf8");
+  const constants = fs.readFileSync(new URL("../scripts/constants.js", import.meta.url), "utf8");
+  const documentContext = fs.readFileSync(new URL("../scripts/board/document-context.js", import.meta.url), "utf8");
+  const cardFactory = fs.readFileSync(new URL("../scripts/board/card-factory.js", import.meta.url), "utf8");
+
+  assert.match(main, /installBoardDrawingClass\(\)/u);
+  assert.doesNotMatch(tools, /board-renderer/u);
+  assert.match(tools, /boardConnectionLayer/u);
+  assert.match(tools, /notifyGraphAssetsChanged/u);
+  assert.match(drawing, /class BoardDrawing extends BaseDrawing/u);
+  assert.match(drawing, /get isVisible\(\)/u);
+  assert.match(drawing, /this\.shape\.addChild\(art\)/u);
+  assert.match(drawing, /this\._mitArt\?\.parent === this\.shape/u);
+  assert.match(drawing, /if \(this\.shape\) this\.shape\.visible = visible/u);
+  assert.doesNotMatch(drawing, /this\.addChild\(art\)/u);
+  assert.match(drawing, /_mitFingerprint/u);
+  assert.match(drawing, /_applyRenderFlags\(flags\)/u);
+  assert.match(drawing, /flags\.refreshSize/u);
+  assert.match(drawing, /refreshMitCard\(\)/u);
+  assert.match(drawing, /_onHandleDragMove\(event\)/u);
+  assert.match(drawing, /_onClickLeft2\(event\)[\s\S]*event\.stopImmediatePropagation\?\.\(\)[\s\S]*openBoardCardSheet[\s\S]*return false/u);
+  assert.match(drawing, /openBoardNoteSheet\(\{ drawing: this\.document \}\)/u);
+  assert.match(drawing, /card\.cardType === "free"/u);
+  assert.match(drawing, /getSetting\("noteBannerImage"\)/u);
+  assert.match(drawing, /fontFamily: NOTE_FONT/u);
+  assert.match(drawing, /fill: 0x000000/u);
+  assert.match(drawing, /ensureNoteFont\(\)/u);
+  assert.match(drawing, /label\.rotation = getSetting\("noteTextDirection"\) === "left" \? -Math\.PI \/ 2 : Math\.PI \/ 2/u);
+  assert.match(drawing, /if \(!isNote\) actions\.push\(\["OpenSource"/u);
+  assert.match(drawing, /MEDIEVAL_TITLE_FONT/u);
+  assert.match(drawing, /addFittedText/u);
+  assert.match(drawing, /_resizeMitBackground\(\)/u);
+  assert.match(drawing, /this\._mitRenderedSize\.width !== width/u);
+  assert.match(drawing, /Position-only changes must not recreate textures/u);
+  assert.match(drawing, /background\.width = width/u);
+  assert.match(drawing, /background\.height = height/u);
+  assert.match(drawing, /card\.cardType === "document"/u);
+  assert.match(drawing, /canShowReferenceImage \? card\.imageOverride : ""/u);
+  assert.match(drawing, /documentReferenceImage \|\| genericParchment/u);
+  assert.match(drawing, /const canShowReferenceImage = card\.showImage/u);
+  assert.match(drawing, /const showImage = card\.showImage/u);
+  assert.match(drawing, /const showName = card\.showName/u);
+  assert.match(drawing, /async function addDeathOverlay/u);
+  assert.match(drawing, /DEFEATED_OVERLAY_IMAGE/u);
+  assert.match(drawing, /getSetting\("deathOverlayOpacity"\)/u);
+  assert.match(drawing, /overlay\.alpha = Number\.isFinite\(configuredOpacity\)/u);
+  assert.match(drawing, /card\.cardType === "actor" && hasCardTag\(card, "dead"\)/u);
+  assert.match(drawing, /if \(dead\) await addDeathOverlay\(art/u);
+  assert.doesNotMatch(drawing, /addDeathTag|getSetting\("deathTagImage"\)/u);
+  assert.doesNotMatch(drawing, /presentation\.text/u);
+  assert.doesNotMatch(drawing, /allowed \|\| !anonymize/u);
+  assert.doesNotMatch(drawing, /backgroundMask/u);
+  assert.doesNotMatch(drawing, /const shadow =/u);
+  assert.match(drawing, /fitContain\(portrait/u);
+  assert.doesNotMatch(drawing, /fitCover/u);
+  assert.match(drawing, /setCardDragPreviews\(previews\)/u);
+  assert.match(drawing, /BOARD_PIN_SCALE/u);
+  assert.match(fs.readFileSync(new URL("../scripts/constants.js", import.meta.url), "utf8"), /BOARD_PIN_SCALE = 1\.56/u);
+  assert.doesNotMatch(drawing, /parchment\.alpha = 0\.24/u);
+  assert.doesNotMatch(drawing, /beginPinDrag/u);
+  assert.match(connections, /#ensurePinContainer\(\)/u);
+  assert.match(connections, /const document = drawing\.document \|\| drawing/u);
+  assert.match(connections, /entry\.hidden = Boolean\(document\.hidden\)/u);
+  assert.match(connections, /drawing\.document\?\.hidden && !game\.user\?\.isGM/u);
+  assert.match(connections, /container\.zIndex = 10/u);
+  assert.match(connections, /container\.zIndex = 20/u);
+  assert.match(connections, /stopImmediatePropagation/u);
+  assert.match(connections, /this\.beginPinDrag\(drawing\.id, event\)/u);
+  assert.match(connections, /#handleConnectionTap\(connectionId, event\)/u);
+  assert.match(connections, /#openConnectionEditor\(connectionId\)/u);
+  assert.match(connections, /repeatedTap/u);
+  assert.match(connections, /#dragPositions = new Map/u);
+  assert.match(connections, /clearCardDragPreviews/u);
+  assert.match(connections, /Math\.max\(24, width \+ 20\)/u);
+  assert.match(connections, /#installStageSelectionHandler\(\)/u);
+  assert.match(connections, /addEventListener\("pointerdown", this\.#stageSelectionHandler, \{ capture: true \}\)/u);
+  assert.match(connections, /#connectionAtPoint\(point\)/u);
+  assert.match(connections, /#distanceToSegment\(point, start, end\)/u);
+  assert.match(connections, /removeEventListener\("pointerdown", this\.#stageSelectionHandler/u);
+  assert.match(connections, /event\?\.shiftKey/u);
+  assert.match(connections, /pointerupoutside/u);
+  assert.match(tools, /capture: true/u);
+  assert.match(tools, /titleOverride: game\.i18n\.localize/u);
+  assert.match(tools, /boardController\.createCard\(note, boardPosition\(\)\)/u);
+  assert.match(controller, /if \(!this\.connectionModeActive\) return false/u);
+  assert.match(controller, /sizeForImageAspectRatio\(payload\.position\?\.imageAspectRatio/u);
+  assert.match(controller, /drawingPatch\["shape\.height"\] = adapted\.height/u);
+  assert.match(controller, /card\.cardType === "free"/u);
+  assert.match(controller, /DEFAULT_NOTE_SIZE/u);
+  assert.match(controller, /height = Math\.max\(height, width \* 2\.4\)/u);
+  assert.match(controller, /normalizeNoteText/u);
+  assert.match(controller, /: \["titleOverride", "tags"\]/u);
+  assert.match(controller, /conflictingFields\(current, normalizedExpected, changedKeys\)/u);
+  assert.match(controller, /conflictingFields\(existing\.style, normalizedExpected, changedKeys\)/u);
+  assert.match(cardSheet, /this\.#initial\.imageOverride \|\| genericParchment/u);
+  assert.match(cardSheet, /loadImageAspectRatio\(card\.imageOverride/u);
+  assert.match(cardSheet, /openBoardCardSheet/u);
+  assert.match(cardSheet, /if \(!game\.user\.isGM\)/u);
+  assert.match(cardSheet, /titleOverride: data\.titleOverride,[\s\S]*tags/u);
+  assert.match(cardSheet, /changedFields\(instance\.#initial/u);
+  assert.match(cardTemplate, /\{\{#unless editing\}\}/u);
+  assert.doesNotMatch(cardTemplate, /browse-document-image/u);
+  assert.doesNotMatch(cardTemplate, /option value="free"/u);
+  assert.doesNotMatch(cardTemplate, /name="text"/u);
+  assert.match(cardTemplate, /\{\{#if isGM\}\}/u);
+  assert.match(cardTemplate, /\{\{#if isActor\}\}<fieldset[\s\S]*name="dead"/u);
+  assert.match(connectionTemplate, /mit-string-palette/u);
+  assert.match(connectionTemplate, /type="radio" name="color"/u);
+  assert.doesNotMatch(connectionTemplate, /type="color"/u);
+  assert.match(noteSheet, /requestSubmit/u);
+  assert.match(noteSheet, /normalizeNoteText/u);
+  assert.match(noteTemplate, /name="noteText"/u);
+  assert.doesNotMatch(noteTemplate, /name="dead"/u);
+  assert.match(noteSheet, /const tags = \[\]/u);
+  assert.match(settings, /register\("noteTextDirection"/u);
+  assert.match(settings, /STRING_COLORS/u);
+  assert.match(settings, /\["noteBannerImage", ""\]/u);
+  assert.match(settings, /NOTE_ASSET_DIRECTORY/u);
+  assert.doesNotMatch(settings, /TAG_ASSET_DIRECTORY|deathTagImage/u);
+  assert.doesNotMatch(settings, /register\("playersCreateCards"/u);
+  assert.doesNotMatch(settings, /register\("playersEditGraph"/u);
+  assert.match(assetTemplate, /name="noteBannerImage"/u);
+  assert.doesNotMatch(assetTemplate, /name="deathTagImage"/u);
+  assert.match(settings, /game\.settings\.register\(MODULE_ID, "deathOverlayOpacity"/u);
+  assert.match(settings, /position: \{ width: 760, height: "auto" \}/u);
+  assert.match(assetTemplate, /class="mit-asset-grid"/u);
+  assert.match(assetTemplate, /data-asset-preview="parchmentTexture"/u);
+  assert.match(assetTemplate, /name="deathOverlayOpacity" type="range"/u);
+  assert.match(css, /\.mit-asset-row \{ display: grid; grid-template-columns: 11\.5rem 5rem minmax\(0, 1fr\)/u);
+  assert.match(css, /\.mit-asset-preview-frame \{/u);
+  assert.match(constants, /CARD_TAGS = Object\.freeze\(\{ Dead: "dead" \}\)/u);
+  assert.match(sockets, /#enqueue\(task\)/u);
+  assert.match(sockets, /Local MJ actions and remote player requests share the same authority/u);
+  assert.match(connections, /#adjacency = new Map/u);
+  assert.match(connections, /scheduleCardRefresh\(cardIds/u);
+  assert.match(connections, /scheduleConnectionRefresh\(connectionIds/u);
+  assert.match(controller, /connectionsById\.\$\{connection\.id\}/u);
+  assert.match(controller, /invalidateState\(scene/u);
+  assert.match(drawing, /loadOptimizedTexture/u);
+  assert.match(cardFactory, /document\.documentName === "Item" \? documentImage\(document, ""\)/u);
+  assert.match(documentContext, /registerActorInventoryMenus/u);
+  assert.match(documentContext, /registerJournalImageMenus/u);
+  assert.match(documentContext, /addJournalImageToBoard/u);
+  assert.match(documentContext, /imageAspectRatio/u);
+});
+
+test("Application V2 templates expose a single root element", () => {
+  const templates = [
+    "../templates/board/card-sheet.hbs",
+    "../templates/board/connection-sheet.hbs",
+    "../templates/board/note-sheet.hbs",
+    "../templates/settings-assets.hbs",
+    "../templates/graph/relation-editor.hbs",
+    "../templates/graph/node-editor.hbs",
+    "../templates/graph/custom-node-editor.hbs",
+    "../templates/graph/faction-editor.hbs"
+  ];
+
+  for (const template of templates) {
+    const source = fs.readFileSync(new URL(template, import.meta.url), "utf8").trim();
+    assert.match(source, /^<div class="mit-form-content">/u, template);
+    assert.match(source, /<\/div>$/u, template);
+  }
+});
