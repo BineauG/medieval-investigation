@@ -1,0 +1,23 @@
+<div class="mit-form-content">
+<div class="mit-form-body">
+  <div class="form-group stacked">
+    <label for="mit-relation-label">{{localize "medieval-investigation-toolkit.RelationEditor.Label"}}</label>
+    <div class="form-fields">
+      <select id="mit-relation-label" name="labelChoice" autofocus>
+        {{#each presets}}<option value="{{value}}" data-color="{{color}}" data-deletable="{{deletable}}" data-id="{{id}}" data-key="{{key}}" data-label="{{label}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        <option value="{{newLabelValue}}" {{#if newSelected}}selected{{/if}}>{{localize "medieval-investigation-toolkit.RelationEditor.NewLabel"}}</option>
+      </select>
+      <button type="button" data-action="delete-label" title="{{localize 'medieval-investigation-toolkit.RelationEditor.DeleteLabel'}}"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  </div>
+  <div class="form-group stacked" data-new-label-fields {{#unless newSelected}}hidden{{/unless}}>
+    <label for="mit-relation-new-label">{{localize "medieval-investigation-toolkit.RelationEditor.NewLabelName"}}</label>
+    <input id="mit-relation-new-label" name="newLabel" type="text" maxlength="500" autocomplete="off">
+  </div>
+  <div class="form-group"><label><input name="mutual" type="checkbox" {{checked edge.mutual}}> {{localize "medieval-investigation-toolkit.RelationEditor.Mutual"}}</label></div>
+  <div class="form-group mit-relation-appearance"><label for="mit-relation-color">{{localize "medieval-investigation-toolkit.RelationEditor.Color"}}</label><input class="mit-relation-color" id="mit-relation-color" name="color" type="color" value="{{edge.style.color}}"><label for="mit-relation-width">{{localize "medieval-investigation-toolkit.RelationEditor.Width"}}</label><input class="mit-relation-width" id="mit-relation-width" name="width" type="number" min="1" max="20" value="{{edge.style.width}}"></div>
+  <div class="form-group"><label for="mit-relation-style">{{localize "medieval-investigation-toolkit.RelationEditor.LineStyle"}}</label><select id="mit-relation-style" name="lineStyle"><option value="solid" {{#if solid}}selected{{/if}}>{{localize "medieval-investigation-toolkit.LineStyles.Solid"}}</option><option value="dashed" {{#if dashed}}selected{{/if}}>{{localize "medieval-investigation-toolkit.LineStyles.Dashed"}}</option><option value="dotted" {{#if dotted}}selected{{/if}}>{{localize "medieval-investigation-toolkit.LineStyles.Dotted"}}</option></select></div>
+  <div class="form-group"><label for="mit-relation-position">{{localize "medieval-investigation-toolkit.RelationEditor.LabelPosition"}}</label><input id="mit-relation-position" name="labelPosition" type="range" min="0.1" max="0.9" step="0.05" value="{{edge.labelPosition}}"></div>
+</div>
+<footer class="form-footer"><button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "medieval-investigation-toolkit.Actions.Save"}}</button></footer>
+</div>

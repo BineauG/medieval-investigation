@@ -1,0 +1,9 @@
+<div class="mit-form-content">
+<div class="mit-form-body">
+  <div class="form-group"><label for="mit-node-display-name">{{localize "medieval-investigation-toolkit.NodeEditor.DisplayName"}}</label><input id="mit-node-display-name" name="displayName" type="text" maxlength="500" value="{{node.displayName}}" {{#if node.custom}}required{{/if}} autofocus></div>
+  <div class="form-group"><label><input name="hideName" type="checkbox" {{checked node.hideName}}> {{localize "medieval-investigation-toolkit.NodeEditor.HideName"}}</label></div>
+  <div class="form-group"><label><input name="hideAppearance" type="checkbox" {{checked node.hideAppearance}}> {{localize "medieval-investigation-toolkit.NodeEditor.HideAppearance"}}</label></div>
+  <div class="form-group"><label><input name="dead" type="checkbox" {{checked node.dead}}> {{localize "medieval-investigation-toolkit.NodeEditor.Dead"}}</label></div>
+</div>
+<footer class="form-footer"><button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "medieval-investigation-toolkit.Actions.Save"}}</button></footer>
+</div>

@@ -1,0 +1,28 @@
+<section class="mit-graph-shell" aria-label="{{localize 'medieval-investigation-toolkit.Graph.AriaLabel'}}">
+  <nav class="mit-graph-toolbar" aria-label="{{localize 'medieval-investigation-toolkit.Graph.Toolbar'}}">
+    <button type="button" data-action="select" class="{{#if toolSelect}}is-active{{/if}}" aria-pressed="{{toolSelect}}"><i class="fa-solid fa-arrow-pointer"></i> {{localize "medieval-investigation-toolkit.Graph.Select"}}</button>
+    <button type="button" data-action="new-node" {{#unless canManageNodes}}disabled{{/unless}}><i class="fa-solid fa-circle-nodes"></i> {{localize "medieval-investigation-toolkit.Graph.NewNode"}}</button>
+    <button type="button" data-action="new-faction" {{#unless canManageNodes}}disabled{{/unless}}><i class="fa-solid fa-shield-halved"></i> {{localize "medieval-investigation-toolkit.Graph.NewFaction"}}</button>
+    <button type="button" data-action="fit"><i class="fa-solid fa-expand"></i> {{localize "medieval-investigation-toolkit.Graph.Fit"}}</button>
+    <button type="button" data-action="save" {{#unless canEdit}}disabled{{/unless}}><i class="fa-solid fa-floppy-disk"></i> {{localize "medieval-investigation-toolkit.Actions.Save"}}</button>
+    <button type="button" data-action="undo" {{#unless canUndo}}disabled{{/unless}}><i class="fa-solid fa-rotate-left"></i> {{localize "medieval-investigation-toolkit.Actions.Undo"}}</button>
+    <button type="button" data-action="redo" {{#unless canRedo}}disabled{{/unless}}><i class="fa-solid fa-rotate-right"></i> {{localize "medieval-investigation-toolkit.Actions.Redo"}}</button>
+    <button type="button" data-action="export"><i class="fa-solid fa-file-export"></i> {{localize "medieval-investigation-toolkit.Actions.Export"}}</button>
+    <button type="button" data-action="import" {{#unless canManageNodes}}disabled{{/unless}}><i class="fa-solid fa-file-import"></i> {{localize "medieval-investigation-toolkit.Actions.Import"}}</button>
+    <input data-import-file type="file" accept="application/json,.json" hidden>
+    <span class="mit-save-status" aria-live="polite">{{saveStatus}}</span>
+  </nav>
+  <svg class="mit-relation-graph" data-relation-graph tabindex="0" role="application">
+    <defs>
+      <marker id="mit-arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto-start-reverse" markerUnits="strokeWidth"><polygon points="0 0, 10 3.5, 0 7" fill="context-stroke"></polygon></marker>
+      <pattern id="mit-graph-paper" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M 28 0 L 0 0 0 28" fill="none" stroke="rgba(76,49,24,.10)" stroke-width="1"></path></pattern>
+    </defs>
+    <rect class="mit-graph-background" x="0" y="0" width="100%" height="100%" fill="url(#mit-graph-paper)"></rect>
+    <g data-graph-viewport>
+      <g data-graph-factions></g>
+      <g data-graph-edges></g>
+      <g data-graph-nodes></g>
+    </g>
+  </svg>
+  <p class="mit-graph-help">{{localize "medieval-investigation-toolkit.Graph.Help"}}</p>
+</section>
