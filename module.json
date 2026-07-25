@@ -1,0 +1,42 @@
+{
+  "id": "medieval-investigation-toolkit",
+  "title": "Medieval Investigation Toolkit",
+  "description": "Un panneau d’enquête médiéval sur scène et un graphe persistant de relations entre personnages et factions.",
+  "version": "1.5.0",
+  "authors": [
+    {
+      "name": "BineauG",
+      "url": "https://github.com/BineauG"
+    }
+  ],
+  "url": "https://github.com/BineauG/medieval-investigation",
+  "manifest": "https://raw.githubusercontent.com/BineauG/medieval-investigation/main/module.json",
+  "download": "https://github.com/BineauG/medieval-investigation/releases/download/v1.5.0/module.zip",
+  "bugs": "https://github.com/BineauG/medieval-investigation/issues",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/medieval-investigation-toolkit.css"
+  ],
+  "languages": [
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "languages/fr.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
+  "socket": true,
+  "relationships": {
+    "systems": []
+  }
+}
