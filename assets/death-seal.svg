@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Cachet de cire noir — Mort">
+  <defs>
+    <radialGradient id="wax" cx="38%" cy="32%" r="72%">
+      <stop offset="0" stop-color="#514b47"/>
+      <stop offset="0.5" stop-color="#211e1c"/>
+      <stop offset="1" stop-color="#080707"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="6" flood-color="#000" flood-opacity=".55"/>
+    </filter>
+  </defs>
+  <path fill="url(#wax)" stroke="#050505" stroke-width="5" filter="url(#shadow)" d="M128 8l17 15 22-8 11 20 23-1 4 23 22 7-4 23 18 14-11 20 13 19-17 16 6 22-21 9-1 23-23 2-8 22-22-5-15 18-20-12-19 13-16-17-22 6-9-21-23-1-2-23-22-8 5-22-18-15 12-20-13-19 17-16-6-22 21-9 1-23 23-3 8-21 22 5 15-18 20 12 19-13 16 17z"/>
+  <circle cx="128" cy="128" r="82" fill="none" stroke="#6a625d" stroke-opacity=".42" stroke-width="5"/>
+  <path fill="#aaa19a" opacity=".78" d="M128 67c-34 0-55 22-55 51 0 18 8 31 24 39v20h18v-14h8v14h10v-14h8v14h18v-20c16-8 24-21 24-39 0-29-21-51-55-51zm-23 69c-9 0-16-7-16-16s7-16 16-16 16 7 16 16-7 16-16 16zm46 0c-9 0-16-7-16-16s7-16 16-16 16 7 16 16-7 16-16 16zm-23 3 9 13h-18z"/>
+  <path d="M92 190h72" stroke="#aaa19a" stroke-opacity=".72" stroke-width="9" stroke-linecap="round"/>
+</svg>
