@@ -1,0 +1,128 @@
+@font-face {
+  font-family: "Almendra SC";
+  src: url("../assets/fonts/AlmendraSC-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.medieval-investigation-toolkit {
+  --mit-ink: #e7dcc5;
+  --mit-dark: #201a17;
+  --mit-panel: #332821;
+  --mit-iron: #71685f;
+  --mit-blood: #7b1010;
+  --mit-gold: #d2ab55;
+  color: var(--mit-ink);
+}
+
+.medieval-investigation-toolkit .window-content {
+  background: linear-gradient(145deg, rgba(21, 17, 15, .98), rgba(55, 41, 31, .98));
+}
+
+.mit-form-body { display: grid; gap: .75rem; padding: .85rem; }
+.mit-form .form-group { display: flex; align-items: center; gap: .6rem; margin: 0; }
+.mit-form .form-group > label:first-child { flex: 0 0 10rem; font-weight: 700; }
+.mit-form .form-group.stacked { display: grid; align-items: stretch; }
+.mit-form .form-group.stacked > label:first-child { flex-basis: auto; }
+.mit-form input, .mit-form select, .mit-form textarea { color: #19130f; background: #e6d5ad; border: 1px solid #775a36; }
+.mit-form textarea { resize: vertical; min-height: 5rem; }
+.mit-form .form-fields { display: flex; flex: 1; gap: .35rem; }
+.mit-form .form-fields input { flex: 1; }
+.mit-form .form-fields select { flex: 1; min-width: 0; }
+.mit-form .mit-relation-color { flex: 0 0 5rem; width: 5rem; min-width: 5rem; max-width: 5rem; height: 2.15rem; padding: .1rem; }
+.mit-form .mit-relation-width { flex: 0 0 3.5rem; width: 3.5rem; min-width: 3.5rem; max-width: 3.5rem; }
+.mit-form .warning { color: #ffb2a8; font-weight: 700; }
+.mit-form .hint, .mit-form .notes { color: #c7bba7; }
+.mit-asset-settings { gap: .85rem; }
+.mit-asset-settings > .notes { margin: 0; line-height: 1.35; }
+.mit-asset-grid { display: grid; gap: .65rem; }
+.mit-asset-row { display: grid; grid-template-columns: 11.5rem 5rem minmax(0, 1fr); gap: .35rem .75rem; align-items: center; min-width: 0; padding: .7rem; background: rgba(92, 67, 44, .22); border: 1px solid #6f5841; border-radius: 5px; }
+.mit-asset-row > label { font-weight: 700; line-height: 1.25; }
+.mit-asset-preview-frame { position: relative; display: grid; place-items: center; grid-row: span 2; width: 5rem; height: 4.25rem; overflow: hidden; color: #8f7c68; background: #171310; border: 1px solid #806747; border-radius: 4px; }
+.mit-asset-preview-frame > i { font-size: 1.35rem; }
+.mit-asset-preview-frame > img { position: absolute; inset: .2rem; width: calc(100% - .4rem); height: calc(100% - .4rem); object-fit: contain; background: #171310; }
+.mit-asset-preview-frame > img[hidden] { display: none; }
+.mit-asset-controls { display: grid; min-width: 0; gap: .35rem; }
+.mit-asset-controls .form-fields { min-width: 0; }
+.mit-asset-controls .form-fields input { width: 100%; min-width: 0; }
+.mit-asset-controls .hint { margin: 0; line-height: 1.25; overflow-wrap: anywhere; }
+.mit-opacity-control { display: grid; grid-template-columns: minmax(0, 1fr) 4.5rem; gap: .65rem; align-items: center; }
+.mit-opacity-control input { width: 100%; }
+.mit-opacity-control output { padding: .25rem .4rem; color: #19130f; text-align: center; font-weight: 700; background: #e6d5ad; border: 1px solid #775a36; border-radius: 3px; }
+.mit-card-tags { margin: 0; padding: .65rem .75rem; border: 1px solid #775a36; }
+.mit-card-tags legend { padding: 0 .35rem; color: #f0dfbf; }
+.mit-card-tags label { display: flex; align-items: center; gap: .45rem; cursor: pointer; }
+.mit-card-tags input { margin: 0; }
+.mit-string-palette { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; margin: 0; padding: .65rem; border: 1px solid #775a36; }
+.mit-string-palette legend { padding: 0 .35rem; color: #f0dfbf; }
+.mit-string-color-choice { display: flex; align-items: center; gap: .4rem; min-width: 0; cursor: pointer; }
+.mit-string-color-choice input { margin: 0; }
+.mit-string-color-swatch { width: 1.25rem; height: 1.25rem; flex: 0 0 auto; border: 1px solid #c9ad78; border-radius: 50%; background: var(--mit-string-color); box-shadow: 0 0 0 1px #211915; }
+.mit-form .form-footer { display: flex; justify-content: flex-end; padding: .65rem .85rem; border-top: 1px solid #6e5948; }
+.mit-form button { min-height: 2rem; }
+.mit-form code { user-select: all; overflow-wrap: anywhere; }
+.mit-card-editor-preview-wrap { display: flex; justify-content: center; padding: .25rem; }
+.mit-card-editor-preview { width: min(100%, 22rem); max-height: 13rem; object-fit: contain; border: 1px solid #8c6f45; background: #19130f; }
+.mit-member-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; max-height: 13rem; overflow: auto; border: 1px solid #716052; padding: .65rem; }
+.mit-member-list label { display: flex; gap: .35rem; align-items: center; }
+
+.mit-context-menu {
+  position: fixed;
+  z-index: 100000;
+  display: grid;
+  min-width: 14rem;
+  margin: 0;
+  padding: .3rem;
+  background: #241c18;
+  border: 1px solid #a7864d;
+  box-shadow: 0 .35rem 1.2rem #000b;
+}
+.mit-context-menu button { min-height: 2.2rem; padding: .4rem .7rem; text-align: left; color: #f2e8d5; background: transparent; border: 0; }
+.mit-context-menu button:hover, .mit-context-menu button:focus-visible { background: #6e1d1d; outline: 2px solid #e2bd69; }
+
+.mit-relation-graph-app .window-content { padding: 0; overflow: hidden; }
+.mit-graph-shell { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; min-height: 28rem; background: #d8c69c; }
+.mit-graph-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; padding: .45rem; background: linear-gradient(#3d3028, #251e1a); border-bottom: 1px solid #736152; }
+.mit-graph-toolbar button { min-height: 2.25rem; color: #eee1ce; background: #332821; border: 1px solid #746154; }
+.mit-graph-toolbar button:hover:not(:disabled), .mit-graph-toolbar button:focus-visible, .mit-graph-toolbar button.is-active { color: #fff4d4; background: #71201d; border-color: #d2ab55; outline: none; }
+.mit-graph-toolbar button.is-active { box-shadow: inset 0 0 0 2px #d2ab5570; }
+.mit-graph-toolbar button:disabled { opacity: .45; }
+.mit-save-status { margin-left: auto; padding: 0 .5rem; color: #d9c9ac; font-size: .85rem; }
+.mit-relation-graph { width: 100%; height: 100%; min-height: 24rem; touch-action: none; background: radial-gradient(circle at 50% 35%, #eadbb5, #c9b382 72%, #bba373); user-select: none; }
+.mit-graph-help { margin: 0; padding: .35rem .6rem; color: #c9bba3; background: #211a17; border-top: 1px solid #5f5045; font-size: .82rem; }
+
+.mit-graph-faction { cursor: move; }
+.mit-graph-faction > rect:not(.mit-resize-handle), .mit-graph-faction > ellipse, .mit-graph-faction > polygon { vector-effect: non-scaling-stroke; }
+.mit-faction-label { fill: #f1dfc2; font: 700 20px Georgia, serif; paint-order: stroke; stroke: #1b1411; stroke-width: 4px; stroke-linejoin: round; }
+.mit-graph-faction.is-selected > rect:not(.mit-resize-handle), .mit-graph-faction.is-selected > ellipse, .mit-graph-faction.is-selected > polygon { filter: drop-shadow(0 0 7px #edc35f); stroke: #edc35f !important; }
+.mit-resize-handle { fill: #e3bb5b; stroke: #24180d; stroke-width: 2; cursor: nwse-resize; vector-effect: non-scaling-stroke; }
+
+.mit-graph-node { cursor: move; }
+.mit-node-hit { fill: transparent; pointer-events: all; }
+.mit-node-image { pointer-events: none; }
+.mit-node-dead-overlay { pointer-events: none; }
+.mit-node-name { opacity: 0; fill: #281a10; font: 700 15px Georgia, serif; paint-order: stroke; stroke: #eadbb5; stroke-width: 5px; stroke-linejoin: round; pointer-events: none; transition: opacity .12s ease; }
+.mit-graph-node:hover .mit-node-name, .mit-graph-node:focus-visible .mit-node-name { opacity: 1; }
+.mit-graph-node.is-appearance-hidden .mit-node-name { opacity: 1; }
+.mit-graph-node.is-selected .mit-node-image { filter: drop-shadow(0 0 7px #c58a24); }
+.mit-graph-node.is-relation-target .mit-node-image { filter: drop-shadow(0 0 9px #8d1717); }
+.mit-graph-node.is-missing .mit-node-image { opacity: .62; filter: grayscale(1); }
+
+.mit-graph-edge { cursor: pointer; }
+.mit-edge-hit { fill: none; stroke: transparent; stroke-width: 16; pointer-events: stroke; }
+.mit-graph-edge > path:not(.mit-edge-hit) { vector-effect: non-scaling-stroke; }
+.mit-edge-label { fill: #2a1a10; font: 700 14px Georgia, serif; paint-order: stroke; stroke: #eadbb5; stroke-width: 5px; stroke-linejoin: round; pointer-events: none; }
+.mit-graph-edge.is-selected > path:not(.mit-edge-hit) { filter: drop-shadow(0 0 5px #f4d06b); stroke: #f4d06b; }
+.mit-edge-preview { stroke: #7b1010; stroke-width: 3; stroke-dasharray: 9 6; vector-effect: non-scaling-stroke; pointer-events: none; }
+
+@media (max-width: 700px) {
+  .mit-graph-toolbar button { font-size: 0; min-width: 2.3rem; }
+  .mit-graph-toolbar button i { font-size: .95rem; }
+  .mit-form .form-group { align-items: stretch; flex-direction: column; }
+  .mit-form .form-group > label:first-child { flex-basis: auto; }
+  .mit-asset-row { grid-template-columns: 4.5rem minmax(0, 1fr); }
+  .mit-asset-row > label { grid-column: 1 / -1; }
+  .mit-asset-preview-frame { grid-column: 1; width: 4.5rem; height: 4rem; }
+  .mit-asset-controls { grid-column: 2; }
+}
