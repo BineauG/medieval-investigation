@@ -1,0 +1,65 @@
+<div class="mit-form-content">
+<div class="mit-form-body mit-asset-settings">
+  <p class="notes">{{localize "medieval-investigation-toolkit.Settings.Assets.Hint"}}</p>
+  <section class="mit-asset-grid">
+    <article class="mit-asset-row">
+      <label for="mit-parchment-texture">{{localize "medieval-investigation-toolkit.Settings.ParchmentTexture.Name"}}</label>
+      <div class="mit-asset-preview-frame"><i class="fa-solid fa-image"></i><img data-asset-preview="parchmentTexture" src="{{parchmentTexture}}" alt="" {{#unless parchmentTexture}}hidden{{/unless}}></div>
+      <div class="mit-asset-controls">
+        <div class="form-fields">
+          <input id="mit-parchment-texture" data-asset-path type="text" name="parchmentTexture" value="{{parchmentTexture}}">
+          <button type="button" data-file-picker="parchmentTexture" data-directory="{{parchmentDirectory}}" aria-label="{{localize 'medieval-investigation-toolkit.Actions.Browse'}}"><i class="fa-solid fa-folder-open"></i></button>
+        </div>
+        <p class="hint">{{localize "medieval-investigation-toolkit.Settings.ParchmentTexture.Directory"}} <code>{{parchmentDirectory}}</code></p>
+      </div>
+    </article>
+    <article class="mit-asset-row">
+      <label for="mit-note-banner-image">{{localize "medieval-investigation-toolkit.Settings.NoteBannerImage.Name"}}</label>
+      <div class="mit-asset-preview-frame"><i class="fa-solid fa-image"></i><img data-asset-preview="noteBannerImage" src="{{noteBannerImage}}" alt="" {{#unless noteBannerImage}}hidden{{/unless}}></div>
+      <div class="mit-asset-controls">
+        <div class="form-fields">
+          <input id="mit-note-banner-image" data-asset-path type="text" name="noteBannerImage" value="{{noteBannerImage}}">
+          <button type="button" data-file-picker="noteBannerImage" data-directory="{{noteDirectory}}" aria-label="{{localize 'medieval-investigation-toolkit.Actions.Browse'}}"><i class="fa-solid fa-folder-open"></i></button>
+        </div>
+        <p class="hint">{{localize "medieval-investigation-toolkit.Settings.NoteBannerImage.Directory"}} <code>{{noteDirectory}}</code></p>
+      </div>
+    </article>
+    <article class="mit-asset-row">
+      <label for="mit-wax-seal-image">{{localize "medieval-investigation-toolkit.Settings.WaxSealImage.Name"}}</label>
+      <div class="mit-asset-preview-frame"><i class="fa-solid fa-image"></i><img data-asset-preview="waxSealImage" src="{{waxSealImage}}" alt="" {{#unless waxSealImage}}hidden{{/unless}}></div>
+      <div class="mit-asset-controls">
+        <div class="form-fields">
+          <input id="mit-wax-seal-image" data-asset-path type="text" name="waxSealImage" value="{{waxSealImage}}">
+          <button type="button" data-file-picker="waxSealImage" data-directory="{{pinDirectory}}" aria-label="{{localize 'medieval-investigation-toolkit.Actions.Browse'}}"><i class="fa-solid fa-folder-open"></i></button>
+        </div>
+        <p class="hint">{{localize "medieval-investigation-toolkit.Settings.WaxSealImage.Directory"}} <code>{{pinDirectory}}</code></p>
+      </div>
+    </article>
+    <article class="mit-asset-row">
+      <label for="mit-unknown-actor-image">{{localize "medieval-investigation-toolkit.Settings.UnknownActorImage.Name"}}</label>
+      <div class="mit-asset-preview-frame"><i class="fa-solid fa-image"></i><img data-asset-preview="unknownActorImage" src="{{unknownActorImage}}" alt=""></div>
+      <div class="mit-asset-controls">
+        <div class="form-fields">
+          <input id="mit-unknown-actor-image" data-asset-path type="text" name="unknownActorImage" value="{{unknownActorImage}}">
+          <button type="button" data-file-picker="unknownActorImage" aria-label="{{localize 'medieval-investigation-toolkit.Actions.Browse'}}"><i class="fa-solid fa-folder-open"></i></button>
+        </div>
+        <p class="hint">{{localize "medieval-investigation-toolkit.Settings.UnknownActorImage.Hint"}}</p>
+      </div>
+    </article>
+    <article class="mit-asset-row">
+      <label for="mit-death-overlay-opacity">{{localize "medieval-investigation-toolkit.Settings.DeathOverlayOpacity.Name"}}</label>
+      <div class="mit-asset-preview-frame"><img src="{{deathOverlayImage}}" alt=""></div>
+      <div class="mit-asset-controls">
+        <div class="mit-opacity-control">
+          <input id="mit-death-overlay-opacity" name="deathOverlayOpacity" type="range" min="0" max="1" step="0.05" value="{{deathOverlayOpacity}}">
+          <output data-death-opacity-output for="mit-death-overlay-opacity">{{deathOverlayOpacityPercent}} %</output>
+        </div>
+        <p class="hint">{{localize "medieval-investigation-toolkit.Settings.DeathOverlayOpacity.Hint"}}</p>
+      </div>
+    </article>
+  </section>
+</div>
+<footer class="form-footer">
+  <button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "medieval-investigation-toolkit.Actions.Save"}}</button>
+</footer>
+</div>
