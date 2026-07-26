@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.1 — 2026-07-26
+
+- Les joueurs peuvent désormais déplacer et redimensionner les cartes du panneau d’enquête ; la transformation est appliquée automatiquement par le client MJ actif puis synchronisée à tous.
+- Le menu contextuel joueur propose maintenant la modification, la duplication et les changements d’ordre, tandis que l’ouverture de la source liée et la suppression restent réservées au MJ.
+- Le bouton **Créer une note** est visible pour les joueurs dès que le panneau d’enquête de la scène est activé.
+- Les requêtes joueur restent validées côté autorité : seule une carte de type Note libre peut être créée, sans aucune confirmation manuelle du MJ.
+
 ## 1.5.0 — 2026-07-26
 
 - Refonte du graphe de relations : nœuds réduits aux portraits, libellés au survol, fond parchemin, liens directionnels par Maj + glisser, relations mutuelles et séparation des liens opposés.
