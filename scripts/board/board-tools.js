@@ -92,7 +92,7 @@ export function registerBoardHooks() {
         title: `${MODULE_ID}.Controls.Connections`,
         icon: "fa-solid fa-link",
         button: true,
-        visible: game.user.isGM,
+        visible: true,
         onChange: (_event, active) => {
           if (active) boardController.startConnection(null, { announce: true });
         }
@@ -252,7 +252,7 @@ export function registerBoardHooks() {
     if (event.key === "Escape") {
       boardController.cancelConnection();
       boardConnectionLayer.select(null);
-    } else if (event.key === "Delete" && boardConnectionLayer.selectedId && game.user.isGM) {
+    } else if (event.key === "Delete" && boardConnectionLayer.selectedId) {
       event.preventDefault();
       event.stopImmediatePropagation();
       void boardConnectionLayer.deleteSelected();

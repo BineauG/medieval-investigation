@@ -49,6 +49,7 @@ test("the board uses a Drawing subclass and no longer imports the overlay render
   assert.match(drawing, /ensureNoteFont\(\)/u);
   assert.match(drawing, /label\.rotation = getSetting\("noteTextDirection"\) === "left" \? -Math\.PI \/ 2 : Math\.PI \/ 2/u);
   assert.match(drawing, /if \(!isNote\) actions\.push\(\["OpenSource"/u);
+  assert.doesNotMatch(drawing, /Duplicate|duplicateCard/u);
   assert.match(drawing, /MEDIEVAL_TITLE_FONT/u);
   assert.match(drawing, /addFittedText/u);
   assert.match(drawing, /_resizeMitBackground\(\)/u);
@@ -101,11 +102,16 @@ test("the board uses a Drawing subclass and no longer imports the overlay render
   assert.match(connections, /removeEventListener\("pointerdown", this\.#stageSelectionHandler/u);
   assert.match(connections, /event\?\.shiftKey/u);
   assert.match(connections, /pointerupoutside/u);
+  assert.doesNotMatch(connections, /if \(!game\.user\.isGM\)[\s\S]{0,180}PermissionDenied/u);
+  assert.doesNotMatch(connections, /if \(!this\.#selectedId \|\| !game\.user\.isGM\)/u);
+  assert.match(connections, /\["Delete", \(\) => boardController\.deleteConnection\(connectionId\)\]/u);
   assert.match(tools, /capture: true/u);
   assert.match(tools, /titleOverride: game\.i18n\.localize/u);
   assert.match(tools, /boardController\.createCard\(note, boardPosition\(\)\)/u);
   assert.match(tools, /name: "mitFreeCard"[\s\S]*visible: true/u);
   assert.match(tools, /name: "mitActorCard"[\s\S]*visible: gmCanCreate\(\)/u);
+  assert.match(tools, /name: "mitConnections"[\s\S]*visible: true/u);
+  assert.doesNotMatch(tools, /boardConnectionLayer\.selectedId && game\.user\.isGM/u);
   assert.match(controller, /if \(!this\.connectionModeActive\) return false/u);
   assert.match(controller, /sizeForImageAspectRatio\(payload\.position\?\.imageAspectRatio/u);
   assert.match(controller, /drawingPatch\["shape\.height"\] = adapted\.height/u);
@@ -155,6 +161,8 @@ test("the board uses a Drawing subclass and no longer imports the overlay render
   assert.match(constants, /CARD_TAGS = Object\.freeze\(\{ Dead: "dead" \}\)/u);
   assert.match(sockets, /#enqueue\(task\)/u);
   assert.match(sockets, /Local MJ actions and remote player requests share the same authority/u);
+  assert.doesNotMatch(sockets, /board\.duplicateCard/u);
+  assert.doesNotMatch(controller, /duplicateCard/u);
   assert.match(connections, /#adjacency = new Map/u);
   assert.match(connections, /scheduleCardRefresh\(cardIds/u);
   assert.match(connections, /scheduleConnectionRefresh\(connectionIds/u);

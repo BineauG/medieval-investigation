@@ -1,7 +1,7 @@
 {
   "medieval-investigation-toolkit": {
     "Actions": {
-      "AddToFaction": "Add to faction", "AddToBoard": "Add to investigation board", "BringFront": "Bring to front", "Browse": "Browse", "Cancel": "Cancel", "Delete": "Delete", "Duplicate": "Duplicate", "Edit": "Edit", "Export": "Export", "Import": "Import", "OpenSource": "Open source document", "Redo": "Redo", "RemoveFromFaction": "Remove from faction", "Reset": "Reset to source", "Save": "Save", "SendBack": "Send to back", "Undo": "Undo"
+      "AddToFaction": "Add to faction", "AddToBoard": "Add to investigation board", "BringFront": "Bring to front", "Browse": "Browse", "Cancel": "Cancel", "Delete": "Delete", "Edit": "Edit", "Export": "Export", "Import": "Import", "OpenSource": "Open source document", "Redo": "Redo", "RemoveFromFaction": "Remove from faction", "Reset": "Reset to source", "Save": "Save", "SendBack": "Send to back", "Undo": "Undo"
     },
     "Board": { "AddedToBoard": "{name} was added to the investigation board.", "ConnectSeal": "Wax seal — create a connection", "ConnectionHelp": "Connection mode is active: click two wax seals in turn, or Shift-drag. Click a string to select; Delete removes it; double-click changes its color. Escape cancels." },
     "CardEditor": { "Actor": "Source actor", "ImageOverride": "Local image", "ReferenceImage": "Reference image and background", "ShowImage": "Show image", "ShowName": "Show name", "SourceUuid": "Optional Foundry reference (UUID)", "Tags": "Tags", "Title": "Investigation card", "TitleOverride": "Local title", "Type": "Card type" },

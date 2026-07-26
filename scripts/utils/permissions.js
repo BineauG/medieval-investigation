@@ -9,12 +9,13 @@ export function canModifyBoard(user, action, _card, _settings = {}) {
   if (!user?.active) return false;
   // Player operations are executed immediately by the active GM authority.
   // The controller still applies field-level validation to card and string
-  // editors, while destructive actions remain GM-only.
+  // editors, while card deletion and source-document creation remain GM-only.
   if (action === "createCard") return _card?.cardType === "free";
   return action === "updateCard"
     || action === "moveCard"
-    || action === "duplicateCard"
-    || action === "updateConnection";
+    || action === "createConnection"
+    || action === "updateConnection"
+    || action === "deleteConnection";
 }
 
 const PLAYER_GRAPH_ACTIONS = new Set([

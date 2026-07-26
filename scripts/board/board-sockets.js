@@ -7,7 +7,6 @@ const ALLOWED_OPERATIONS = new Set([
   "board.createCard",
   "board.updateCard",
   "board.moveCard",
-  "board.duplicateCard",
   "board.deleteCard",
   "board.createConnection",
   "board.updateConnection",

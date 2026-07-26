@@ -133,10 +133,6 @@ export class BoardController {
     return socketService.request("board.moveCard", { sceneId: scene?.id, drawingId, changes });
   }
 
-  async duplicateCard(drawingId, scene = this.scene) {
-    return socketService.request("board.duplicateCard", { sceneId: scene?.id, drawingId });
-  }
-
   async deleteCard(drawingId, scene = this.scene) {
     return socketService.request("board.deleteCard", { sceneId: scene?.id, drawingId });
   }
@@ -210,7 +206,6 @@ export class BoardController {
       case "createCard": return this.#createCard(scene, payload, user);
       case "updateCard": return this.#updateCard(scene, drawing, payload.changes, payload.expected, user);
       case "moveCard": return this.#moveCard(scene, drawing, payload.changes);
-      case "duplicateCard": return this.#duplicateCard(scene, drawing, user);
       case "deleteCard": return this.#deleteCard(scene, drawing);
       case "createConnection": return this.#createConnection(scene, payload, user);
       case "updateConnection": return this.#updateConnection(scene, payload, user);
@@ -315,18 +310,6 @@ export class BoardController {
     if (!Object.hasOwn(patch, "shape.height")) patch["shape.height"] = current.height;
     await scene.updateEmbeddedDocuments("Drawing", [patch]);
     return { drawingId: drawing.id };
-  }
-
-  async #duplicateCard(scene, drawing, user) {
-    if (!drawing || cardFlag(drawing)?.kind !== "board-card") throw new Error("Errors.CardMissing");
-    const source = drawing.toObject();
-    delete source._id;
-    source.x += 40;
-    source.y += 40;
-    source.elevation = drawingElevation(drawing) + 1;
-    source.flags[MODULE_ID] = sanitizeNoteCard(createCardData({ ...migrateCard(cardFlag(drawing)), createdBy: user.id }));
-    const created = await scene.createEmbeddedDocuments("Drawing", [source]);
-    return { drawingId: created[0]?.id };
   }
 
   async #deleteCard(scene, drawing) {

@@ -502,7 +502,7 @@ class BoardConnectionLayer {
   }
 
   async deleteSelected() {
-    if (!this.#selectedId || !game.user.isGM) return false;
+    if (!this.#selectedId) return false;
     const id = this.#selectedId;
     this.select(null);
     try {
@@ -516,10 +516,6 @@ class BoardConnectionLayer {
 
   beginPinDrag(drawingId, event) {
     if (!event?.shiftKey) return false;
-    if (!game.user.isGM) {
-      ui.notifications.warn(game.i18n.localize(`${MODULE_ID}.Errors.PermissionDenied`));
-      return true;
-    }
     this.cancelPinDrag();
     this.#dragSourceId = drawingId;
     this.#suppressTapUntil = Number.POSITIVE_INFINITY;
@@ -656,8 +652,10 @@ class BoardConnectionLayer {
     if (!connection) return;
     this.select(connectionId);
     const position = this.#eventPosition(event);
-    const actions = [["Edit", () => this.#openConnectionEditor(connection.id)]];
-    if (game.user.isGM) actions.push(["Delete", () => boardController.deleteConnection(connectionId)]);
+    const actions = [
+      ["Edit", () => this.#openConnectionEditor(connection.id)],
+      ["Delete", () => boardController.deleteConnection(connectionId)]
+    ];
     this.#openMenu(position, actions);
   }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.2 — 2026-07-26
+
+- Les joueurs disposent désormais du même flux de gestion des ficelles que le MJ : création par **Maj + glisser** ou par l’outil **Connexions**, sélection, modification et suppression par menu contextuel ou touche Suppr.
+- La création et la suppression joueur sont validées puis exécutées automatiquement par le client MJ actif, dans la même file d’autorité que les autres opérations partagées.
+- L’action de duplication des cartes est retirée pour tous les utilisateurs, ainsi que son opération socket interne.
+
 ## 1.5.1 — 2026-07-26
 
 - Les joueurs peuvent désormais déplacer et redimensionner les cartes du panneau d’enquête ; la transformation est appliquée automatiquement par le client MJ actif puis synchronisée à tous.

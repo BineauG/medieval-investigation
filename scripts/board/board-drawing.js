@@ -108,7 +108,6 @@ function cardMenu(drawing, event) {
     : openBoardCardSheet({ drawing });
   const actions = [
     ["Edit", editCard],
-    ["Duplicate", () => boardController.duplicateCard(drawing.id, drawing.parent)],
     ["BringFront", () => boardController.moveCard(drawing.id, {
       z: Math.max(0, ...cards.map(drawingElevation)) + 1
     }, drawing.parent)],
