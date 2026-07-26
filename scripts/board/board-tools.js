@@ -20,7 +20,7 @@ function boardPosition() {
   return { x: scene.width / 2, y: scene.height / 2 };
 }
 
-function playerCanCreate() {
+function gmCanCreate() {
   return Boolean(game.user.isGM);
 }
 
@@ -56,7 +56,7 @@ export function registerBoardHooks() {
         title: `${MODULE_ID}.Controls.ActorCard`,
         icon: "fa-solid fa-user-secret",
         button: true,
-        visible: playerCanCreate(),
+        visible: gmCanCreate(),
         onChange: (_event, active) => {
           if (active) openBoardCardSheet({ initial: { cardType: "actor" }, position: boardPosition() });
         }
@@ -66,7 +66,7 @@ export function registerBoardHooks() {
         title: `${MODULE_ID}.Controls.DocumentCard`,
         icon: "fa-solid fa-file-lines",
         button: true,
-        visible: playerCanCreate(),
+        visible: gmCanCreate(),
         onChange: (_event, active) => {
           if (active) openBoardCardSheet({ initial: { cardType: "document" }, position: boardPosition() });
         }
@@ -76,7 +76,7 @@ export function registerBoardHooks() {
         title: `${MODULE_ID}.Controls.FreeCard`,
         icon: "fa-solid fa-bookmark",
         button: true,
-        visible: playerCanCreate(),
+        visible: true,
         onChange: (_event, active) => {
           if (!active) return;
           const note = createCardData({
@@ -131,7 +131,7 @@ export function registerBoardHooks() {
   });
 
   Hooks.on("dropCanvasData", (_canvas, data) => {
-    if (!boardController.isEnabled() || !playerCanCreate() || (!data?.uuid && data?.type !== "Actor")) return;
+    if (!boardController.isEnabled() || !gmCanCreate() || (!data?.uuid && data?.type !== "Actor")) return;
     (async () => {
       try {
         const card = await cardFromDrop(data);

@@ -203,7 +203,8 @@ export class BoardController {
     const action = operation.slice("board.".length);
     const drawing = payload?.drawingId ? scene.drawings?.get(payload.drawingId) : null;
     const card = drawing ? cardFlag(drawing) : null;
-    if (!canModifyBoard(user, action, card, boardSettings())) throw new Error("Errors.PermissionDenied");
+    const authorizationCard = card || (action === "createCard" ? payload?.card : null);
+    if (!canModifyBoard(user, action, authorizationCard, boardSettings())) throw new Error("Errors.PermissionDenied");
 
     switch (action) {
       case "createCard": return this.#createCard(scene, payload, user);

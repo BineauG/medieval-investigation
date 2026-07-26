@@ -116,12 +116,10 @@ function cardMenu(drawing, event) {
       z: Math.min(0, ...cards.map(drawingElevation)) - 1
     }, drawing.parent)]
   ];
-  if (!game.user.isGM) {
-    showContextMenu(eventPosition(event), [["Edit", editCard]]);
-    return;
+  if (game.user.isGM) {
+    if (!isNote) actions.push(["OpenSource", () => openSource(drawing)]);
+    actions.push(["Delete", () => deleteCard(drawing)]);
   }
-  if (!isNote) actions.push(["OpenSource", () => openSource(drawing)]);
-  actions.push(["Delete", () => deleteCard(drawing)]);
   showContextMenu(eventPosition(event), actions);
 }
 
@@ -246,7 +244,7 @@ export function installBoardDrawingClass() {
     }
 
     _canDrag(user, event) {
-      if (boardIsEnabled(this.document)) return Boolean(user?.isGM) && !this.document.locked;
+      if (boardIsEnabled(this.document)) return !this.document.locked;
       return super._canDrag(user, event);
     }
 
@@ -376,12 +374,64 @@ export function installBoardDrawingClass() {
       return result;
     }
 
+    _onDragLeftDrop(event) {
+      if (!boardIsEnabled(this.document) || game.user?.isGM || event.interactionData?.dragHandle) {
+        return super._onDragLeftDrop(event);
+      }
+      const { clones, destination } = event.interactionData || {};
+      if (!clones?.length || !canvas.dimensions.rect.contains(destination.x, destination.y)) return false;
+      event.interactionData.clearPreviewContainer = false;
+      const updates = clones
+        .filter(clone => clone?._original?.document?.flags?.[MODULE_ID]?.kind === "board-card")
+        .map(clone => {
+          let position = { x: clone.document.x, y: clone.document.y };
+          if (!event.shiftKey) position = clone.getSnappedPosition(position);
+          const original = clone._original;
+          original.document.locked = original.document._source.locked;
+          original.renderFlags?.set?.({ refreshState: true });
+          return {
+            drawingId: original.document.id,
+            scene: original.document.parent,
+            changes: { x: position.x, y: position.y }
+          };
+        });
+      void Promise.all(updates.map(update => boardController.moveCard(
+        update.drawingId,
+        update.changes,
+        update.scene
+      )))
+        .catch(error => boardController.notifyError(error))
+        .finally(() => this.layer.clearPreviewContainer());
+      return false;
+    }
+
     _onDragLeftCancel(event) {
       const result = super._onDragLeftCancel(event);
       if (boardIsEnabled(this.document) && !event.interactionData?.dragHandle) {
         boardConnectionLayer.clearCardDragPreviews();
       }
       return result;
+    }
+
+    _onHandleDragDrop(event) {
+      if (!boardIsEnabled(this.document) || game.user?.isGM) return super._onHandleDragDrop(event);
+      event.interactionData.restoreOriginalData = false;
+      const originalData = event.interactionData.originalData;
+      const width = Number(this.document.shape?.width);
+      const height = Number(this.document.shape?.height);
+      const changes = {
+        x: Number(this.document.x),
+        y: Number(this.document.y),
+        width,
+        height
+      };
+      void boardController.moveCard(this.document.id, changes, this.document.parent)
+        .catch(error => {
+          this.document.updateSource(originalData);
+          this.renderFlags?.set?.({ refreshTransform: true, refreshSize: true });
+          boardController.notifyError(error);
+        });
+      return false;
     }
 
     _onDragEnd() {
