@@ -55,13 +55,17 @@ test("authority selection is deterministic", () => {
   assert.equal(authority.id, "a");
 });
 
-test("players can only edit shared card fields and existing strings", () => {
+test("players can manipulate board cards, create free notes, and edit shared fields", () => {
   const player = { id: "p1", active: true, isGM: false };
   const inactive = { id: "p2", active: false, isGM: false };
   const gm = { id: "gm", active: true, isGM: true };
   assert.equal(canModifyBoard(gm, "deleteCard", {}, {}), true);
-  assert.equal(canModifyBoard(player, "createCard"), false);
+  assert.equal(canModifyBoard(player, "createCard", { cardType: "free" }), true);
+  assert.equal(canModifyBoard(player, "createCard", { cardType: "actor" }), false);
+  assert.equal(canModifyBoard(player, "createCard", { cardType: "document" }), false);
   assert.equal(canModifyBoard(player, "updateCard"), true);
+  assert.equal(canModifyBoard(player, "moveCard"), true);
+  assert.equal(canModifyBoard(player, "duplicateCard"), true);
   assert.equal(canModifyBoard(player, "updateConnection"), true);
   assert.equal(canModifyBoard(player, "deleteCard"), false);
   assert.equal(canModifyBoard(player, "deleteConnection"), false);

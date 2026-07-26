@@ -36,6 +36,10 @@ test("the board uses a Drawing subclass and no longer imports the overlay render
   assert.match(drawing, /flags\.refreshSize/u);
   assert.match(drawing, /refreshMitCard\(\)/u);
   assert.match(drawing, /_onHandleDragMove\(event\)/u);
+  assert.match(drawing, /_onHandleDragDrop\(event\)/u);
+  assert.match(drawing, /boardController\.moveCard\(this\.document\.id, changes/u);
+  assert.match(drawing, /_onDragLeftDrop\(event\)/u);
+  assert.match(drawing, /Promise\.all\(updates\.map\(update => boardController\.moveCard/u);
   assert.match(drawing, /_onClickLeft2\(event\)[\s\S]*event\.stopImmediatePropagation\?\.\(\)[\s\S]*openBoardCardSheet[\s\S]*return false/u);
   assert.match(drawing, /openBoardNoteSheet\(\{ drawing: this\.document \}\)/u);
   assert.match(drawing, /card\.cardType === "free"/u);
@@ -100,6 +104,8 @@ test("the board uses a Drawing subclass and no longer imports the overlay render
   assert.match(tools, /capture: true/u);
   assert.match(tools, /titleOverride: game\.i18n\.localize/u);
   assert.match(tools, /boardController\.createCard\(note, boardPosition\(\)\)/u);
+  assert.match(tools, /name: "mitFreeCard"[\s\S]*visible: true/u);
+  assert.match(tools, /name: "mitActorCard"[\s\S]*visible: gmCanCreate\(\)/u);
   assert.match(controller, /if \(!this\.connectionModeActive\) return false/u);
   assert.match(controller, /sizeForImageAspectRatio\(payload\.position\?\.imageAspectRatio/u);
   assert.match(controller, /drawingPatch\["shape\.height"\] = adapted\.height/u);
