@@ -7,10 +7,14 @@ export function selectAuthority(users = []) {
 export function canModifyBoard(user, action, _card, _settings = {}) {
   if (user?.isGM) return true;
   if (!user?.active) return false;
-  // Players have exactly two shared mutations: the restricted card fields and
-  // the style of an existing string. Field-level validation is performed by
-  // the board controller on the authoritative GM client.
-  return action === "updateCard" || action === "updateConnection";
+  // Player operations are executed immediately by the active GM authority.
+  // The controller still applies field-level validation to card and string
+  // editors, while destructive actions remain GM-only.
+  if (action === "createCard") return _card?.cardType === "free";
+  return action === "updateCard"
+    || action === "moveCard"
+    || action === "duplicateCard"
+    || action === "updateConnection";
 }
 
 const PLAYER_GRAPH_ACTIONS = new Set([
