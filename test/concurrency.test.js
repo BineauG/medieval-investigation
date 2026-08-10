@@ -66,3 +66,36 @@ test("the authority serializes automatic operations without manual approval", as
   assert.equal(maximumActive, 1);
   assert.deepEqual(events, ["start-1", "end-1", "start-2", "end-2", "start-3", "end-3"]);
 });
+
+test("ephemeral graph previews are broadcast without entering the authority mutation queue", () => {
+  const gm = { id: "gm", active: true, isGM: true };
+  const player = { id: "player", active: true, isGM: false };
+  let socketListener;
+  let emitted;
+  globalThis.game = {
+    user: gm,
+    users: { contents: [gm, player], get: id => id === player.id ? player : gm },
+    socket: {
+      on(_channel, listener) { socketListener = listener; },
+      emit(_channel, packet) { emitted = packet; }
+    }
+  };
+  const service = new SocketService();
+  service.register(async () => undefined);
+  let received;
+  service.onEvent("graph.drag-preview", (payload, user) => { received = { payload, user }; });
+
+  service.publish("graph.drag-preview", { positions: [{ entityId: "n1", x: 10, y: 20 }] });
+  assert.equal(emitted.type, "event");
+  assert.equal(emitted.eventName, "graph.drag-preview");
+
+  socketListener({
+    type: "event",
+    moduleId: emitted.moduleId,
+    eventName: "graph.drag-preview",
+    userId: player.id,
+    payload: { positions: [{ entityId: "n2", x: 30, y: 40 }] }
+  });
+  assert.equal(received.user.id, player.id);
+  assert.equal(received.payload.positions[0].entityId, "n2");
+});

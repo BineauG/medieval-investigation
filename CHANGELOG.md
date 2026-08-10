@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.0 — 2026-08-10
+
+- Le graphe utilise désormais des mutations atomiques (`moveEntities`, création, modification et suppression de liens ou d’entités) au lieu de sauvegarder une copie complète avec une révision globale.
+- Plusieurs utilisateurs peuvent modifier simultanément des éléments distincts : l’autorité MJ fusionne les opérations dans sa file et ne refuse que les champs réellement devenus obsolètes.
+- Les joueurs peuvent déplacer les nœuds Acteur, créer des relations par **Maj + glisser**, puis modifier ou supprimer les relations sans validation manuelle du MJ.
+- Pendant un déplacement, la position temporaire est diffusée aux autres fenêtres à fréquence limitée ; une seule écriture persistante est effectuée au relâchement.
+- Le zoom et la position de la vue deviennent locaux à chaque utilisateur. L’annulation et le rétablissement envoient des opérations inverses au lieu de restaurer silencieusement une ancienne copie du graphe.
+- Le bouton Enregistrer et la fermeture attendent maintenant la fin de la file de synchronisation. La page de Journal demeure le stockage persistant du graphe.
+
 ## 1.5.2 — 2026-07-26
 
 - Les joueurs disposent désormais du même flux de gestion des ficelles que le MJ : création par **Maj + glisser** ou par l’outil **Connexions**, sélection, modification et suppression par menu contextuel ou touche Suppr.

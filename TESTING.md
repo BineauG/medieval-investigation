@@ -6,15 +6,15 @@ Environnement : Windows, Node fourni par le workspace, dépôt `medieval-investi
 
 | Commande | Résultat |
 |---|---|
-| `npm test` | 40/40 tests réussis |
+| `npm test` | 63/63 tests réussis |
 | `npm run check` | manifeste, JSON, fichiers déclarés, absence de CDN/jQuery/`actor.system` validés |
 | `node --check` sur tous les `.js` | réussi |
 
-La suite couvre : validation des cartes et connexions, migrations, rejet audio/vidéo, résolution UUID, sélection de l’image de token, permissions, autorité MJ, validation/sérialisation du graphe, quatre combinaisons d’endpoints, appartenance multiple, nettoyage après suppression et chargement du point d’entrée sur une surface API `ApplicationV2` mockée.
+La suite couvre : validation des cartes et connexions, migrations, rejet audio/vidéo, résolution UUID, sélection de l’image de token, permissions, autorité MJ, mutations collaboratives du graphe, conflits par champ, validation/sérialisation, relations et déplacement joueur, appartenance multiple, nettoyage après suppression et chargement du point d’entrée sur une surface API `ApplicationV2` mockée.
 
 ## Statut des tests Foundry réels
 
-Une version antérieure du module a été chargée dans une session locale Foundry 13.351 + WFRP4e en tant que MJ. Les contrôles, formulaires, dossiers `pins` et `parchments`, FilePicker et bouton du graphe avaient été observés. Les changements 1.4.1 sont contrôlés hors ligne uniquement : Foundry n’a pas été lancé pour ce patch. La file automatique, les deltas de champs et la détection de conflits sont testés unitairement ; leur scénario multijoueur visuel reste à exécuter. Foundry v14 et le multijoueur ne sont pas installés ou validés dans cet environnement.
+Une version antérieure du module a été chargée dans une session locale Foundry 13.351 + WFRP4e en tant que MJ. Les contrôles, formulaires, dossiers `pins` et `parchments`, FilePicker et bouton du graphe avaient été observés. Les changements 1.6.0 sont contrôlés hors ligne uniquement : Foundry n’a pas été lancé pour ce patch. La file automatique, les mutations atomiques, les deltas de champs, les permissions et la détection de conflits sont testés unitairement ; le déplacement diffusé entre plusieurs navigateurs reste à confirmer visuellement. Foundry v14 et le multijoueur ne sont pas installés ou validés dans cet environnement.
 
 Légende : `À exécuter` signifie non testé dans une instance réelle ; `Partiel` précise la partie réellement observée.
 
@@ -73,11 +73,13 @@ Légende : `À exécuter` signifie non testé dans une instance réelle ; `Parti
 | Maj + déplacer faction | Forme seule ; sans Maj, membres visibles déplacés | À exécuter |
 | Créer les 4 types de relation | Actor↔Actor, Actor↔Faction, Faction↔Actor, Faction↔Faction | À exécuter |
 | Direction/libellé/style | Flèche optionnelle et libellé lisible | À exécuter |
-| Zoom/pan/ajuster | Viewport fluide et persistant | À exécuter |
-| Annuler/rétablir | Positions, formes, membres et relations restaurés | À exécuter |
+| Zoom/pan/ajuster | Viewport fluide et local à chaque utilisateur, sans écriture partagée | À exécuter |
+| Annuler/rétablir | Une opération inverse est synchronisée sans restaurer une ancienne copie globale | À exécuter |
 | Export/import JSON | Aller-retour validé, import invalide refusé | À exécuter |
-| Fermeture/rechargement | Même graphe et même viewport | À exécuter |
-| Deux éditeurs simultanés | La seconde sauvegarde obsolète est refusée | À exécuter |
+| Fermeture/rechargement | Même graphe ; la fermeture attend les mutations encore en file | À exécuter |
+| Deux éditeurs sur des éléments distincts | Les deux mutations sont fusionnées et visibles dans les deux fenêtres | Automatisé hors ligne ; à confirmer visuellement |
+| Deux éditeurs sur le même champ | La première mutation est conservée, la seconde resynchronisée avec un message | Automatisé hors ligne ; à confirmer visuellement |
+| Deux utilisateurs déplaçant des nœuds distincts | Aperçu distant pendant le geste et une écriture par nœud au relâchement | À exécuter |
 | 150 entités / 300 relations | Déplacement met à jour seulement l’entité et ses arêtes incidentes | À exécuter |
 
 ## Permissions et reconnexion
@@ -87,7 +89,8 @@ Légende : `À exécuter` signifie non testé dans une instance réelle ; `Parti
 | Joueur double-cliquant une carte | Éditeur limité au titre local et au tag Mort ; modification visible par tous | À exécuter |
 | Joueur tentant une autre modification de carte | Refus par l’interface et par le contrôleur MJ | À exécuter |
 | Joueur double-cliquant une ficelle | Éditeur de style ouvert ; modification visible par tous | À exécuter |
-| Joueur créant/supprimant une ficelle ou modifiant le graphe | Refus | À exécuter |
+| Joueur déplaçant un nœud Acteur | Mouvement diffusé en direct puis synchronisé au relâchement | À exécuter |
+| Joueur créant/modifiant/supprimant une relation du graphe | Opération immédiate via le MJ actif, visible pour tous | À exécuter |
 | Deux joueurs modifiant des champs différents | Requêtes automatiques sérialisées et fusionnées, sans intervention du MJ | Automatisé hors ligne ; à confirmer visuellement |
 | Deux joueurs modifiant le même champ | Première écriture conservée ; seconde refusée avec message de conflit | Automatisé hors ligne ; à confirmer visuellement |
 | Deux MJ actifs | Premier identifiant lexical seul traite la commande | À exécuter |

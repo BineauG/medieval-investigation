@@ -19,8 +19,8 @@ export function canModifyBoard(user, action, _card, _settings = {}) {
 }
 
 const PLAYER_GRAPH_ACTIONS = new Set([
-  "save",
   "deleteNode",
+  "moveNode",
   "createEdge",
   "updateEdge",
   "deleteEdge"

@@ -1,43 +1,9 @@
 import { GRAPH_JOURNAL_FLAG, GRAPH_PAGE_FLAG, MODULE_ID } from "../constants.js";
-import { createEmptyGraph, normalizeGraph, validateGraph } from "./relation-graph-data.js";
+import { createEmptyGraph } from "./relation-graph-data.js";
 import { migrateGraph } from "../utils/migrations.js";
-import { canModifyGraph } from "../utils/permissions.js";
+import { applyGraphMutation, assertGraphMutationPermission } from "./relation-graph-mutations.js";
 import { socketService } from "../board/board-sockets.js";
 import { logger } from "../utils/log.js";
-
-function equal(left, right) {
-  return JSON.stringify(left) === JSON.stringify(right);
-}
-
-export function mergePlayerGraphChanges(currentInput, proposedInput) {
-  const current = migrateGraph(currentInput);
-  const proposed = migrateGraph(proposedInput);
-  const currentNodes = new Map(current.nodes.map(node => [node.id, node]));
-  const proposedNodeIds = new Set(proposed.nodes.map(node => node.id));
-  const deletedNodeIds = new Set(current.nodes.filter(node => !proposedNodeIds.has(node.id)).map(node => node.id));
-  const expectedNodes = current.nodes.filter(node => !deletedNodeIds.has(node.id));
-  if (!equal(proposed.nodes, expectedNodes)) throw new Error("Errors.PermissionDenied");
-
-  const expectedFactions = current.factions.map(faction => ({
-    ...faction,
-    memberNodeIds: faction.memberNodeIds.filter(nodeId => !deletedNodeIds.has(nodeId))
-  }));
-  if (!equal(proposed.factions, expectedFactions)) throw new Error("Errors.PermissionDenied");
-  if (proposed.nodes.some(node => !currentNodes.has(node.id))) throw new Error("Errors.PermissionDenied");
-
-  return normalizeGraph({
-    ...current,
-    nodes: proposed.nodes,
-    factions: expectedFactions,
-    edges: proposed.edges,
-    relationLabels: proposed.relationLabels,
-    disabledRelationPresetKeys: proposed.disabledRelationPresetKeys,
-    viewport: current.viewport,
-    name: current.name,
-    id: current.id,
-    revision: current.revision
-  });
-}
 
 export class RelationGraphStore {
   findPage() {
@@ -80,29 +46,26 @@ export class RelationGraphStore {
     }
   }
 
-  async save(page, graph) {
-    return socketService.request("graph.save", {
+  async mutate(page, mutation) {
+    return socketService.request("graph.mutate", {
       pageUuid: page?.uuid,
-      expectedRevision: Number(graph?.revision || 0),
-      graph
+      mutation
     });
   }
 
   async handleOperation(operation, payload, user) {
-    if (operation !== "graph.save") return undefined;
-    if (!canModifyGraph(user, "save")) throw new Error("Errors.PermissionDenied");
+    if (operation !== "graph.mutate") return undefined;
     const page = await fromUuid(payload?.pageUuid);
     if (!page || page.documentName !== "JournalEntryPage" || !page.getFlag(MODULE_ID, GRAPH_PAGE_FLAG)) {
       throw new Error("Errors.GraphMissing");
     }
-    const result = validateGraph(payload.graph);
-    if (!result.valid) throw new Error("Errors.InvalidGraph");
     const current = migrateGraph(page.getFlag(MODULE_ID, GRAPH_PAGE_FLAG));
-    if (Number(payload.expectedRevision) !== Number(current.revision)) throw new Error("Errors.GraphConflict");
-    const next = user.isGM ? result.value : mergePlayerGraphChanges(current, result.value);
+    assertGraphMutationPermission(user, current, payload?.mutation);
+    const applied = applyGraphMutation(current, payload?.mutation);
+    const next = applied.graph;
     next.revision = current.revision + 1;
     await page.setFlag(MODULE_ID, GRAPH_PAGE_FLAG, next);
-    return next;
+    return { graph: next, result: applied.result };
   }
 }
 

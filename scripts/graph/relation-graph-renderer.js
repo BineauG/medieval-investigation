@@ -193,6 +193,7 @@ export class RelationGraphRenderer {
   #edgeLanes = new Map();
   #listeners = [];
   #dragCleanup = null;
+  #previewedEntityIds = new Set();
 
   constructor(app, svg) {
     this.#app = app;
@@ -213,6 +214,7 @@ export class RelationGraphRenderer {
   }
 
   render() {
+    this.#previewedEntityIds.clear();
     this.#entityElements.clear();
     this.#edgeElements.clear();
     this.#factionsLayer.replaceChildren();
@@ -433,11 +435,11 @@ export class RelationGraphRenderer {
         item.y = baseline.y + dy;
         this.updateEntityAndEdges(id);
       }
+      this.#app.previewInteractiveChange();
     };
     const up = () => {
       this.#endDrag();
-      if (entity.kind === "actor") this.#app.addMembershipsAtPosition(entity.id);
-      this.#app.commitInteractiveChange();
+      void this.#app.commitInteractiveChange();
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up, { once: true });
@@ -459,10 +461,11 @@ export class RelationGraphRenderer {
       faction.width = Math.max(100, initial.width + current.x - start.x);
       faction.height = Math.max(80, initial.height + current.y - start.y);
       this.updateEntityAndEdges(faction.id, true);
+      this.#app.previewInteractiveChange();
     };
     const up = () => {
       this.#endDrag();
-      this.#app.commitInteractiveChange();
+      void this.#app.commitInteractiveChange();
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up, { once: true });
@@ -479,6 +482,32 @@ export class RelationGraphRenderer {
 
   cancelInteraction() {
     this.#endDrag();
+    this.#app.cancelInteractiveChange();
+  }
+
+  applyEntityPreviews(positions = []) {
+    const previews = new Map();
+    for (const position of positions) {
+      const item = this.#app.entity(position.entityId);
+      if (!item) continue;
+      previews.set(position.entityId, position);
+    }
+    for (const id of this.#previewedEntityIds) {
+      if (!previews.has(id)) this.updateEntityAndEdges(id, this.#app.entity(id)?.kind === "faction");
+    }
+    const originals = new Map();
+    for (const [id, preview] of previews) {
+      const item = this.#app.entity(id);
+      if (!item) continue;
+      originals.set(id, { x: item.x, y: item.y, width: item.width, height: item.height });
+      item.x = preview.x;
+      item.y = preview.y;
+      if (Number.isFinite(preview.width)) item.width = preview.width;
+      if (Number.isFinite(preview.height)) item.height = preview.height;
+    }
+    for (const id of previews.keys()) this.updateEntityAndEdges(id, this.#app.entity(id)?.kind === "faction");
+    for (const [id, original] of originals) Object.assign(this.#app.entity(id), original);
+    this.#previewedEntityIds = new Set(previews.keys());
   }
 
   updateEntityAndEdges(entityId, rerenderEntity = false) {

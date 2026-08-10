@@ -9,12 +9,21 @@ import {
 } from "../scripts/graph/relation-graph-renderer.js";
 import { RELATION_PRESETS } from "../scripts/constants.js";
 
-test("graph changes stay local until Save or application close", () => {
+test("graph changes use immediate collaborative mutations while Save flushes the queue", () => {
   const app = fs.readFileSync(new URL("../scripts/graph/relation-graph-app.js", import.meta.url), "utf8");
+  const store = fs.readFileSync(new URL("../scripts/graph/relation-graph-store.js", import.meta.url), "utf8");
+  const sockets = fs.readFileSync(new URL("../scripts/board/board-sockets.js", import.meta.url), "utf8");
   const settings = fs.readFileSync(new URL("../scripts/settings.js", import.meta.url), "utf8");
 
-  assert.doesNotMatch(app, /setTimeout\(\(\) => this\.save/u);
-  assert.doesNotMatch(app, /autoSaveGraph|saveDebounce/u);
+  assert.match(app, /#commitMutation\(mutation/u);
+  assert.match(app, /await relationGraphStore\.mutate\(this\.page, mutation\)/u);
+  assert.match(store, /socketService\.request\("graph\.mutate"/u);
+  assert.match(sockets, /"graph\.mutate"/u);
+  assert.match(sockets, /onEvent\(eventName, handler\)/u);
+  assert.match(sockets, /publish\(eventName, payload\)/u);
+  assert.match(app, /socketService\.onEvent\("graph\.drag-preview"/u);
+  assert.match(app, /now - this\.#lastDragBroadcast < 50/u);
+  assert.doesNotMatch(store, /expectedRevision|graph\.save/u);
   assert.match(app, /async _onClose\(options\)[\s\S]*await this\.save\(\)/u);
   assert.match(app, /if \(action === "save"\) return this\.save\(\)/u);
   assert.doesNotMatch(settings, /register\("autoSaveGraph"|register\("saveDebounce"/u);
@@ -128,7 +137,7 @@ test("the GM can create a standalone node from an asset image and a name", () =>
   assert.match(graphTemplate, /data-action="new-node" \{\{#unless canManageNodes\}\}disabled/u);
   assert.match(app, /if \(action === "new-node"\) return this\.createCustomNode\(\)/u);
   assert.match(app, /createCustomNode\(\)[\s\S]*if \(!this\.canManageNodes\) return/u);
-  assert.match(app, /addCustomNode\(this\.graph,[\s\S]*name: node\.name,[\s\S]*image: node\.image/u);
+  assert.match(app, /createCustomNode\(\)[\s\S]*name: node\.name,[\s\S]*image: node\.image,[\s\S]*kind: "addCustomNode"/u);
   assert.match(app, /if \(!node\.actorUuid\)[\s\S]*missing: false,[\s\S]*name: node\.nameOverride,[\s\S]*image: node\.imageOverride/u);
   assert.match(data, /isStandalone = !hasActor && Boolean\(node\.nameOverride && node\.imageOverride\)/u);
   assert.match(editor, /openFilePicker/u);
@@ -202,21 +211,25 @@ test("relation labels can be created, sorted, persisted, and deleted with their 
   assert.match(template, /name="labelChoice"/u);
   assert.match(template, /name="newLabel"/u);
   assert.match(template, /data-action="delete-label"/u);
-  assert.match(app, /addRelationLabel\(state, newRelationLabel\)/u);
-  assert.match(app, /deleteRelationLabel\(definition\)[\s\S]*removeRelationLabel\(this\.graph, definition\)/u);
+  assert.match(app, /kind: "addEdge"[\s\S]*newRelationLabel/u);
+  assert.match(app, /deleteRelationLabel\(definition\)[\s\S]*kind: "removeRelationLabel"/u);
   assert.match(data, /state\.edges = state\.edges\.filter\(edge => normalizedLabel\(edge\.label\) !== name\)/u);
   assert.match(css, /\.mit-form \.mit-relation-color \{ flex: 0 0 5rem; width: 5rem; min-width: 5rem; max-width: 5rem;/u);
   assert.match(css, /\.mit-form \.mit-relation-width \{ flex: 0 0 3\.5rem; width: 3\.5rem; min-width: 3\.5rem; max-width: 3\.5rem;/u);
 });
 
-test("players can manage links and delete actors without receiving node editing or movement controls", () => {
+test("players can move actor nodes and manage links without receiving node editors", () => {
   const app = fs.readFileSync(new URL("../scripts/graph/relation-graph-app.js", import.meta.url), "utf8");
   const renderer = fs.readFileSync(new URL("../scripts/graph/relation-graph-renderer.js", import.meta.url), "utf8");
   const store = fs.readFileSync(new URL("../scripts/graph/relation-graph-store.js", import.meta.url), "utf8");
+  const mutations = fs.readFileSync(new URL("../scripts/graph/relation-graph-mutations.js", import.meta.url), "utf8");
   assert.match(app, /get canManageNodes\(\)[\s\S]*game\.user\?\.isGM/u);
   assert.match(app, /get canDeleteNodes\(\)[\s\S]*"deleteNode"/u);
   assert.match(app, /get canManageEdges\(\)[\s\S]*"updateEdge"/u);
   assert.match(renderer, /this\.#app\.canManageEdges[\s\S]*#beginRelationDrag/u);
   assert.match(renderer, /this\.#app\.canMoveEntity\(entity\)[\s\S]*#beginDrag/u);
-  assert.match(store, /mergePlayerGraphChanges/u);
+  assert.match(renderer, /applyEntityPreviews\(positions = \[\]\)/u);
+  assert.match(app, /canModifyGraph\(game\.user, "moveNode"\)/u);
+  assert.match(store, /applyGraphMutation/u);
+  assert.match(mutations, /case "moveEntities"/u);
 });

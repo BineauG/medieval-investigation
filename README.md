@@ -88,12 +88,11 @@ Glisser une faction déplace par défaut sa forme et ses membres visibles. Maint
 
 ### Relations
 
-1. Activer **Nouvelle relation**.
-2. Cliquer une source, personnage ou faction.
-3. Cliquer une cible, personnage ou faction.
-4. Saisir le libellé libre, la direction et le style.
+Maintenir `Maj`, glisser depuis un personnage source et relâcher sur un autre personnage. L’éditeur s’ouvre alors pour choisir le libellé, la couleur, l’épaisseur et le caractère mutuel de la relation. Ce geste est disponible au MJ comme aux joueurs.
 
-Les relations directionnelles affichent une flèche. Le double-clic ou le menu contextuel ouvre l’éditeur. Le graphe prend en charge zoom à la molette, déplacement de vue, ajustement à la fenêtre, suppression clavier, annuler/rétablir, sauvegarde, import et export JSON.
+Les relations directionnelles affichent une flèche. Le double-clic ou le menu contextuel ouvre l’éditeur. Le graphe prend en charge zoom à la molette, déplacement de vue, ajustement à la fenêtre, suppression clavier, annuler/rétablir, synchronisation, import et export JSON.
+
+Le graphe est collaboratif. Chaque création, modification, suppression ou déplacement terminé devient une mutation atomique envoyée à l’autorité MJ. Plusieurs utilisateurs peuvent donc travailler sur des nœuds ou relations distincts sans sauvegarde globale ni écrasement. Pendant le glissement d’un nœud, les autres fenêtres reçoivent un aperçu limité à vingt images par seconde ; la position définitive est écrite une seule fois au relâchement. Si deux utilisateurs modifient simultanément le même champ du même élément, la première mutation est conservée et la seconde est resynchronisée avec un message de conflit.
 
 ## Permissions et synchronisation
 
@@ -102,6 +101,8 @@ Le MJ dispose de toutes les fonctions. Sur une scène où le panneau d’enquêt
 Une requête joueur est envoyée au premier MJ actif trié par identifiant. Ce client sert uniquement d’autorité technique : aucune confirmation, fenêtre d’approbation ou validation manuelle du MJ n’est demandée. L’opération autorisée est exécutée automatiquement. Le contrôleur vérifie l’utilisateur actif, la scène, le type de carte et les champs : une création joueur doit être une note libre, tandis que l’éditeur de carte reste limité à `titleOverride` et `tags`. Les déplacements, redimensionnements, changements d’ordre et toutes les opérations de ficelle autorisées passent par le même canal. Toutes les mutations finales utilisent les documents Foundry et sont donc rediffusées à tous.
 
 Toutes les opérations reçues par l’autorité — joueurs et MJ compris — passent par une file unique et sont traitées dans leur ordre d’arrivée. Les éditeurs joueur transmettent seulement les champs réellement changés : des modifications simultanées du titre et du tag, ou de deux propriétés différentes d’une ficelle, se fusionnent. Si deux utilisateurs modifient la même propriété à partir d’une ancienne version, la seconde écriture est refusée avec un message clair ; il suffit de rouvrir l’éditeur. Aucun changement récent n’est ainsi écrasé silencieusement.
+
+Dans le graphe, les joueurs peuvent déplacer les nœuds Acteur et gérer entièrement les relations : création par **Maj + glisser**, édition par double-clic ou menu contextuel et suppression. La création des nœuds et factions, la modification de leur identité ou apparence et le déplacement des factions restent réservés au MJ. Le zoom et la position de la vue sont locaux à chaque utilisateur et ne provoquent aucune écriture partagée. Le bouton **Enregistrer** attend la fin des mutations déjà envoyées ; fermer la fenêtre effectue le même vidage de file.
 
 Limite de sécurité : le canal socket brut d’un module ne fournit pas au callback l’identité authentifiée de l’émetteur. Le module revalide l’identifiant déclaré contre les utilisateurs actifs, mais un client volontairement malveillant pourrait tenter de l’usurper. De plus, les flags de scènes et journaux peuvent exposer des UUID techniques aux clients autorisés à recevoir ces documents. Sur le panneau, les cases **Afficher le nom** et **Afficher l’image** constituent un partage explicite de ces deux informations ; la fiche source demeure protégée par ses permissions Foundry. L’anonymisation continue de s’appliquer au graphe.
 
@@ -114,7 +115,6 @@ Les réglages monde couvrent :
 - couleur WFRP parmi neuf teintes et épaisseur des ficelles ;
 - confirmation de suppression ;
 - taille des personnages, style des factions et relations ;
-- sauvegarde automatique et délai de debounce ;
 - anonymisation et logs de diagnostic.
 
 Au premier chargement par un MJ, le module crée quatre dossiers persistants dans les données Foundry : `assets/medieval-investigation-toolkit/pins` pour les sceaux, `assets/medieval-investigation-toolkit/parchments` pour les fonds/références, `assets/medieval-investigation-toolkit/notes` pour les languettes et fanions et `assets/medieval-investigation-toolkit/tags` pour les cachets de tags. Le menu **Configurer les images** ouvre directement ces dossiers pour choisir l’image globale de chaque type. La texture de parchemin ou de fanion sélectionnée est étirée aux dimensions exactes de la carte et constitue son unique surface opaque ; aucun beige, cadre ou ombre n’est superposé.
@@ -138,7 +138,7 @@ const graph = await api.getActiveGraph();
 - panneau et ficelles : un flag versionné de `Scene` ;
 - graphe : un flag versionné de `JournalEntryPage` ;
 - migrations : cartes v0/v1 vers v2, nettoyage des références structurelles cassées ;
-- concurrence du graphe : compteur de révision et refus d’un enregistrement obsolète.
+- concurrence du graphe : mutations atomiques, file d’autorité, comparaison des champs modifiés et aperçus de déplacement non persistants.
 
 ## Limites connues
 

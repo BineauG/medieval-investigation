@@ -71,12 +71,12 @@ test("players can manipulate cards and fully manage board connections", () => {
   assert.equal(canModifyBoard(player, "deleteConnection"), true);
   assert.equal(canModifyBoard(player, "deleteCard"), false);
   assert.equal(canModifyBoard(inactive, "updateCard"), false);
-  assert.equal(canModifyGraph(player, "save"), true);
+  assert.equal(canModifyGraph(player, "save"), false);
   assert.equal(canModifyGraph(player, "deleteNode"), true);
   assert.equal(canModifyGraph(player, "createEdge"), true);
   assert.equal(canModifyGraph(player, "updateEdge"), true);
   assert.equal(canModifyGraph(player, "deleteEdge"), true);
-  assert.equal(canModifyGraph(player, "moveNode"), false);
+  assert.equal(canModifyGraph(player, "moveNode"), true);
   assert.equal(canModifyGraph(player, "updateNode"), false);
   assert.equal(canModifyGraph(inactive, "updateEdge"), false);
   assert.equal(canModifyGraph(gm), true);

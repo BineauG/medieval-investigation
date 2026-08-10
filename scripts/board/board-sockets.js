@@ -11,13 +11,14 @@ const ALLOWED_OPERATIONS = new Set([
   "board.createConnection",
   "board.updateConnection",
   "board.deleteConnection",
-  "graph.save"
+  "graph.mutate"
 ]);
 
 export class SocketService {
   #pending = new Map();
   #handler = null;
   #queue = Promise.resolve();
+  #eventHandlers = new Map();
 
   register(handler) {
     this.#handler = handler;
@@ -30,6 +31,28 @@ export class SocketService {
 
   isAuthority() {
     return this.authority()?.id === game.user.id;
+  }
+
+  onEvent(eventName, handler) {
+    if (typeof handler !== "function") throw new TypeError("A socket event handler is required");
+    const handlers = this.#eventHandlers.get(eventName) || new Set();
+    handlers.add(handler);
+    this.#eventHandlers.set(eventName, handlers);
+    return () => {
+      handlers.delete(handler);
+      if (!handlers.size) this.#eventHandlers.delete(eventName);
+    };
+  }
+
+  publish(eventName, payload) {
+    if (typeof eventName !== "string" || !eventName.startsWith("graph.")) throw new TypeError("Unsupported socket event");
+    game.socket.emit(SOCKET_NAME, {
+      type: "event",
+      moduleId: MODULE_ID,
+      eventName,
+      userId: game.user.id,
+      payload
+    });
   }
 
   #enqueue(task) {
@@ -70,6 +93,15 @@ export class SocketService {
 
   #onPacket(packet) {
     if (!packet || packet.moduleId !== MODULE_ID) return;
+    if (packet.type === "event") {
+      if (packet.userId === game.user.id) return;
+      const user = game.users?.get(packet.userId);
+      if (!user?.active || typeof packet.eventName !== "string") return;
+      for (const handler of this.#eventHandlers.get(packet.eventName) || []) {
+        try { handler(packet.payload, user); } catch (error) { logger.warn("Socket event rejected", packet.eventName, error); }
+      }
+      return;
+    }
     if (packet.type === "response" && packet.userId === game.user.id) {
       const pending = this.#pending.get(packet.requestId);
       if (!pending) return;

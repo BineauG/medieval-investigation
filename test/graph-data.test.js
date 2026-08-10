@@ -15,7 +15,7 @@ import {
   updateEntity,
   validateGraph
 } from "../scripts/graph/relation-graph-data.js";
-import { mergePlayerGraphChanges } from "../scripts/graph/relation-graph-store.js";
+import { applyGraphMutation, assertGraphMutationPermission } from "../scripts/graph/relation-graph-mutations.js";
 
 function graphFixture() {
   let graph = createEmptyGraph();
@@ -139,41 +139,82 @@ test("custom relation labels persist alphabetically with their base color and de
   assert.deepEqual(deserializeGraph(serializeGraph(hiddenPreset)), hiddenPreset);
 });
 
-test("player graph saves may edit links and delete nodes but cannot alter retained nodes or factions", () => {
+test("collaborative mutations merge independent player changes and reject only stale fields", () => {
   let current = graphFixture();
   current = setMembership(current, "n1", "f1", true).state;
   current = addEdge(current, { id: "edge", sourceId: "n1", targetId: "n2", label: "Ami" }).state;
 
-  const edgeEdit = structuredClone(current);
-  edgeEdit.edges[0].label = "Rival de";
-  edgeEdit.edges[0].style.color = "#B3261E";
-  const mergedEdge = mergePlayerGraphChanges(current, edgeEdit);
-  assert.equal(mergedEdge.edges[0].label, "Rival de");
-  assert.equal(mergedEdge.edges[0].style.color, "#B3261E");
+  const player = { id: "player", active: true, isGM: false };
+  const move = {
+    kind: "moveEntities",
+    entries: [{ entityId: "n1", changes: { x: 440, y: 300 }, expected: { x: 400, y: 300 } }]
+  };
+  const edgeEdit = {
+    kind: "updateEdge",
+    edgeId: "edge",
+    changes: { label: "Rival de", style: { color: "#B3261E", width: 4, lineStyle: "solid" } },
+    expected: { label: "Ami", style: current.edges[0].style }
+  };
+  assert.equal(assertGraphMutationPermission(player, current, move), true);
+  assert.equal(assertGraphMutationPermission(player, current, edgeEdit), true);
 
-  const withCustomLabel = addRelationLabel(current, { label: "Soupçonne", color: "#C65D00" }).state;
-  const mergedLabel = mergePlayerGraphChanges(current, withCustomLabel);
-  assert.equal(mergedLabel.relationLabels[0].label, "Soupçonne");
-  assert.equal(mergedLabel.relationLabels[0].color, "#C65D00");
+  let merged = applyGraphMutation(current, move).graph;
+  merged = applyGraphMutation(merged, edgeEdit).graph;
+  assert.equal(merged.nodes.find(node => node.id === "n1").x, 440);
+  assert.equal(merged.edges[0].label, "Rival de");
+  assert.equal(merged.edges[0].style.color, "#B3261E");
 
-  const deletion = removeEntity(current, "n1").state;
-  const mergedDeletion = mergePlayerGraphChanges(current, deletion);
-  assert.equal(mergedDeletion.nodes.some(node => node.id === "n1"), false);
-  assert.equal(mergedDeletion.edges.length, 0);
-  assert.deepEqual(mergedDeletion.factions[0].memberNodeIds, []);
+  const staleMove = {
+    kind: "moveEntities",
+    entries: [{ entityId: "n1", changes: { x: 480 }, expected: { x: 400 } }]
+  };
+  assert.throws(() => applyGraphMutation(merged, staleMove), /GraphConflict/u);
+  assert.throws(() => assertGraphMutationPermission(player, current, {
+    kind: "updateEntity", entityId: "n1", changes: { dead: true }, expected: { dead: false }
+  }), /PermissionDenied/u);
+  assert.throws(() => assertGraphMutationPermission(player, current, {
+    kind: "updateEntity", entityId: "f1", changes: { name: "Changed" }, expected: { name: "Council" }
+  }), /PermissionDenied/u);
+  assert.throws(() => assertGraphMutationPermission(player, current, {
+    kind: "addCustomNode", node: { name: "Forbidden", image: "forbidden.webp" }
+  }), /PermissionDenied/u);
+});
 
-  const movedNode = structuredClone(current);
-  movedNode.nodes[0].x += 40;
-  assert.throws(() => mergePlayerGraphChanges(current, movedNode), /PermissionDenied/u);
+test("player movement adds automatic faction membership only after the authoritative mutation", () => {
+  const player = { id: "player", active: true, isGM: false };
+  const current = graphFixture();
+  const mutation = {
+    kind: "moveEntities",
+    addMemberships: true,
+    entries: [{ entityId: "n1", changes: { x: 450, y: 320 }, expected: { x: 400, y: 300 } }]
+  };
+  assert.equal(assertGraphMutationPermission(player, current, mutation), true);
+  const moved = applyGraphMutation(current, mutation).graph;
+  assert.deepEqual(moved.nodes.find(node => node.id === "n1").factionIds, ["f1"]);
+  assert.deepEqual(moved.factions.find(faction => faction.id === "f1").memberNodeIds, ["n1"]);
+});
 
-  const markedDead = structuredClone(current);
-  markedDead.nodes[0].dead = true;
-  assert.throws(() => mergePlayerGraphChanges(current, markedDead), /PermissionDenied/u);
-
-  const editedFaction = structuredClone(current);
-  editedFaction.factions[0].name = "Changed";
-  assert.throws(() => mergePlayerGraphChanges(current, editedFaction), /PermissionDenied/u);
-
-  const addedStandalone = addCustomNode(current, { name: "Forbidden", image: "forbidden.webp" }).state;
-  assert.throws(() => mergePlayerGraphChanges(current, addedStandalone), /PermissionDenied/u);
+test("players can create, edit and remove links through atomic mutations", () => {
+  const player = { id: "player", active: true, isGM: false };
+  let graph = graphFixture();
+  const create = {
+    kind: "addEdge",
+    edge: { id: "player-edge", sourceId: "n1", targetId: "n2", label: "Ami" },
+    newRelationLabel: { id: "friend-label", label: "Ami", color: "#2E7D32" }
+  };
+  assert.equal(assertGraphMutationPermission(player, graph, create), true);
+  graph = applyGraphMutation(graph, create).graph;
+  const update = {
+    kind: "updateEdge",
+    edgeId: "player-edge",
+    changes: { label: "Rival de" },
+    expected: { label: "Ami" }
+  };
+  assert.equal(assertGraphMutationPermission(player, graph, update), true);
+  graph = applyGraphMutation(graph, update).graph;
+  assert.equal(graph.edges[0].label, "Rival de");
+  const remove = { kind: "removeEdge", edgeId: "player-edge" };
+  assert.equal(assertGraphMutationPermission(player, graph, remove), true);
+  graph = applyGraphMutation(graph, remove).graph;
+  assert.equal(graph.edges.length, 0);
 });
