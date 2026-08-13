@@ -43,6 +43,10 @@ function boundaryPoint(entity, toward) {
     const scale = 1 / Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
     return { x: origin.x + dx * scale, y: origin.y + dy * scale };
   }
+  if (entity.kind === "faction" && entity.shape === "polygon") {
+    const intersection = polygonBoundaryPoint(entity, origin, toward);
+    if (intersection) return intersection;
+  }
   const scale = 1 / Math.max(Math.abs(dx) / (bounds.width / 2), Math.abs(dy) / (bounds.height / 2));
   return { x: origin.x + dx * scale, y: origin.y + dy * scale };
 }
@@ -103,8 +107,8 @@ function curvePath(segments) {
   return d;
 }
 
-function polygonPoints(faction) {
-  if (faction.points?.length >= 3) return faction.points.map(point => `${faction.x + point.x},${faction.y + point.y}`).join(" ");
+function polygonVertices(faction) {
+  if (faction.points?.length >= 3) return faction.points.map(point => ({ x: faction.x + point.x, y: faction.y + point.y }));
   const x = faction.x;
   const y = faction.y;
   const w = faction.width;
@@ -112,7 +116,60 @@ function polygonPoints(faction) {
   return [
     [x + w * 0.2, y], [x + w * 0.8, y], [x + w, y + h * 0.25], [x + w, y + h * 0.75],
     [x + w * 0.8, y + h], [x + w * 0.2, y + h], [x, y + h * 0.75], [x, y + h * 0.25]
-  ].map(point => point.join(",")).join(" ");
+  ].map(([pointX, pointY]) => ({ x: pointX, y: pointY }));
+}
+
+function polygonPoints(faction) {
+  return polygonVertices(faction).map(point => `${point.x},${point.y}`).join(" ");
+}
+
+function polygonBoundaryPoint(faction, origin, toward) {
+  const direction = { x: toward.x - origin.x, y: toward.y - origin.y };
+  const cross = (left, right) => left.x * right.y - left.y * right.x;
+  let nearest = null;
+  const vertices = polygonVertices(faction);
+  for (let index = 0; index < vertices.length; index += 1) {
+    const start = vertices[index];
+    const end = vertices[(index + 1) % vertices.length];
+    const segment = { x: end.x - start.x, y: end.y - start.y };
+    const denominator = cross(direction, segment);
+    if (Math.abs(denominator) < 1e-9) continue;
+    const offset = { x: start.x - origin.x, y: start.y - origin.y };
+    const distance = cross(offset, segment) / denominator;
+    const position = cross(offset, direction) / denominator;
+    if (distance < 0 || position < 0 || position > 1 || (nearest && distance >= nearest.distance)) continue;
+    nearest = {
+      distance,
+      point: { x: origin.x + direction.x * distance, y: origin.y + direction.y * distance }
+    };
+  }
+  return nearest?.point || null;
+}
+
+function pointInPolygon(point, vertices) {
+  let inside = false;
+  for (let index = 0, previous = vertices.length - 1; index < vertices.length; previous = index, index += 1) {
+    const current = vertices[index];
+    const before = vertices[previous];
+    const crosses = (current.y > point.y) !== (before.y > point.y)
+      && point.x < ((before.x - current.x) * (point.y - current.y)) / (before.y - current.y) + current.x;
+    if (crosses) inside = !inside;
+  }
+  return inside;
+}
+
+export function entityContainsPoint(entity, point) {
+  const bounds = renderBounds(entity);
+  if (point.x < bounds.x || point.x > bounds.x + bounds.width || point.y < bounds.y || point.y > bounds.y + bounds.height) return false;
+  if (entity.kind !== "faction" || entity.shape === "rounded-rectangle") return true;
+  if (entity.shape === "ellipse") {
+    const center = entityCenter(entity);
+    const x = (point.x - center.x) / (bounds.width / 2);
+    const y = (point.y - center.y) / (bounds.height / 2);
+    return x * x + y * y <= 1;
+  }
+  if (entity.shape === "polygon") return pointInPolygon(point, polygonVertices(entity));
+  return true;
 }
 
 export function edgeCurve(source, target, laneOffset = 0) {
@@ -337,7 +394,7 @@ export class RelationGraphRenderer {
   #bindEntity(element, entity) {
     element.addEventListener("pointerdown", event => {
       event.stopPropagation();
-      if (entity.kind === "actor" && this.#app.canManageEdges && event.button === 0 && event.shiftKey) {
+      if (this.#app.canManageEdges && event.button === 0 && event.shiftKey) {
         return this.#beginRelationDrag(event, entity);
       }
       this.#app.select({ kind: entity.kind, id: entity.id });
@@ -373,7 +430,7 @@ export class RelationGraphRenderer {
     };
     const move = pointer => {
       if (pointer.pointerId !== pointerId) return;
-      const target = this.#actorNodeAt(pointer.clientX, pointer.clientY, source.id);
+      const target = this.#entityAt(pointer.clientX, pointer.clientY, source.id);
       setTarget(target?.id || null);
       const curve = target
         ? edgeCurve(source, target)
@@ -382,7 +439,7 @@ export class RelationGraphRenderer {
     };
     const up = pointer => {
       if (pointer.pointerId !== pointerId) return;
-      const completedTargetId = this.#actorNodeAt(pointer.clientX, pointer.clientY, source.id)?.id || null;
+      const completedTargetId = this.#entityAt(pointer.clientX, pointer.clientY, source.id)?.id || null;
       this.#endDrag();
       if (completedTargetId) this.#app.createRelation(source.id, completedTargetId);
     };
@@ -402,12 +459,17 @@ export class RelationGraphRenderer {
     move(event);
   }
 
-  #actorNodeAt(clientX, clientY, excludedId) {
+  #entityAt(clientX, clientY, excludedId) {
     const point = this.clientToGraph(clientX, clientY);
     for (let index = this.#app.graph.nodes.length - 1; index >= 0; index -= 1) {
       const node = this.#app.graph.nodes[index];
       if (node.id === excludedId) continue;
-      if (point.x >= node.x && point.x <= node.x + node.width && point.y >= node.y && point.y <= node.y + node.height) return node;
+      if (entityContainsPoint(node, point)) return node;
+    }
+    const factions = [...this.#app.graph.factions].sort((left, right) => Number(right.z || 0) - Number(left.z || 0));
+    for (const faction of factions) {
+      if (faction.id === excludedId) continue;
+      if (entityContainsPoint(faction, point)) return faction;
     }
     return null;
   }
@@ -417,7 +479,7 @@ export class RelationGraphRenderer {
     this.#endDrag();
     const start = this.clientToGraph(event.clientX, event.clientY);
     const baselines = new Map([[entity.id, { x: entity.x, y: entity.y }]]);
-    if (entity.kind === "faction" && !event.shiftKey) {
+    if (entity.kind === "faction" && !event.altKey) {
       for (const nodeId of entity.memberNodeIds) {
         const node = this.#app.entity(nodeId);
         if (node) baselines.set(nodeId, { x: node.x, y: node.y });

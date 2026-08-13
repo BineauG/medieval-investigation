@@ -6,7 +6,7 @@ Environnement : Windows, Node fourni par le workspace, dépôt `medieval-investi
 
 | Commande | Résultat |
 |---|---|
-| `npm test` | 63/63 tests réussis |
+| `npm test` | 69/69 tests réussis |
 | `npm run check` | manifeste, JSON, fichiers déclarés, absence de CDN/jQuery/`actor.system` validés |
 | `node --check` sur tous les `.js` | réussi |
 
@@ -14,7 +14,7 @@ La suite couvre : validation des cartes et connexions, migrations, rejet audio/v
 
 ## Statut des tests Foundry réels
 
-Une version antérieure du module a été chargée dans une session locale Foundry 13.351 + WFRP4e en tant que MJ. Les contrôles, formulaires, dossiers `pins` et `parchments`, FilePicker et bouton du graphe avaient été observés. Les changements 1.6.0 sont contrôlés hors ligne uniquement : Foundry n’a pas été lancé pour ce patch. La file automatique, les mutations atomiques, les deltas de champs, les permissions et la détection de conflits sont testés unitairement ; le déplacement diffusé entre plusieurs navigateurs reste à confirmer visuellement. Foundry v14 et le multijoueur ne sont pas installés ou validés dans cet environnement.
+Une version antérieure du module a été chargée dans une session locale Foundry 13.351 + WFRP4e en tant que MJ. Les contrôles, formulaires, dossiers `pins` et `parchments`, FilePicker et bouton du graphe avaient été observés. Les changements 1.6.0 et 1.6.1 sont contrôlés hors ligne uniquement : Foundry n’a pas été lancé pour ces patchs. La file automatique, les mutations atomiques, les deltas de champs, les permissions, la détection de conflits et les cibles de relation personnage/faction sont testés unitairement ; le déplacement diffusé entre plusieurs navigateurs et le nouvel éditeur de faction restent à confirmer visuellement. Foundry v14 et le multijoueur ne sont pas installés ou validés dans cet environnement.
 
 Légende : `À exécuter` signifie non testé dans une instance réelle ; `Partiel` précise la partie réellement observée.
 
@@ -70,8 +70,9 @@ Légende : `À exécuter` signifie non testé dans une instance réelle ; `Parti
 | Créer les trois formes de faction | Formes fermées derrière les personnages | À exécuter |
 | Déposer personnage dans faction | Appartenance explicite et badge persistant | À exécuter |
 | Ajouter deux factions | Deux badges ; sortir des formes ne retire rien | À exécuter |
-| Maj + déplacer faction | Forme seule ; sans Maj, membres visibles déplacés | À exécuter |
-| Créer les 4 types de relation | Actor↔Actor, Actor↔Faction, Faction↔Actor, Faction↔Faction | À exécuter |
+| Créer/modifier une faction | Formulaire structuré sans liste de membres ; aperçu synchronisé avec forme, dimensions, couleurs et opacité | À exécuter |
+| Alt + déplacer faction | Forme seule ; sans Alt, membres visibles déplacés | À exécuter |
+| Maj + glisser pour les 4 types de relation | Actor↔Actor, Actor↔Faction, Faction↔Actor, Faction↔Faction ; cible surlignée et éditeur identique | À exécuter |
 | Direction/libellé/style | Flèche optionnelle et libellé lisible | À exécuter |
 | Zoom/pan/ajuster | Viewport fluide et local à chaque utilisateur, sans écriture partagée | À exécuter |
 | Annuler/rétablir | Une opération inverse est synchronisée sans restaurer une ancienne copie globale | À exécuter |

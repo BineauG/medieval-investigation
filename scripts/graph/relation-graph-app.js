@@ -449,11 +449,9 @@ export class RelationGraphApp extends HandlebarsApplicationMixin(ApplicationV2) 
     if (!this.canManageNodes) return;
     const rect = this.element.querySelector("[data-relation-graph]").getBoundingClientRect();
     const point = this.#renderer.clientToGraph(rect.left + rect.width / 2, rect.top + rect.height / 2);
-    const memberOptions = this.graph.nodes.map(node => ({ id: node.id, name: this.nodePresentation(node.id).name, checked: false }));
     new FactionEditor({
       x: point.x - 250,
       y: point.y - 175,
-      memberOptions,
       style: {
         fill: getSetting("factionFill"),
         fillOpacity: getSetting("factionOpacity"),
@@ -475,7 +473,7 @@ export class RelationGraphApp extends HandlebarsApplicationMixin(ApplicationV2) 
     if (!this.canManageEdges) return;
     const source = this.entity(sourceId);
     const target = this.entity(targetId);
-    if (source?.kind !== "actor" || target?.kind !== "actor") return;
+    if (!source || !target) return;
     if (sourceId === targetId) return ui.notifications.warn(game.i18n.localize(`${MODULE_ID}.Errors.SelfConnection`));
     new RelationEditor({
       sourceId,
@@ -525,9 +523,8 @@ export class RelationGraphApp extends HandlebarsApplicationMixin(ApplicationV2) 
   editFaction(factionId) {
     if (!this.canManageNodes) return;
     const faction = this.entity(factionId);
-    const memberOptions = this.graph.nodes.map(node => ({ id: node.id, name: this.nodePresentation(node.id).name, checked: faction.memberNodeIds.includes(node.id) }));
-    new FactionEditor({ ...clone(faction), memberOptions }, async updated => {
-      const changed = changedFields(faction, updated, ["name", "description", "shape", "width", "height", "style", "memberNodeIds"]);
+    new FactionEditor(clone(faction), async updated => {
+      const changed = changedFields(faction, updated, ["name", "description", "shape", "width", "height", "style"]);
       if (!Object.keys(changed.changes).length) return;
       await this.#commitMutation(
         { kind: "updateEntity", entityId: factionId, ...changed },

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.1 — 2026-08-13
+
+- Les relations peuvent désormais être créées par **Maj + glisser** entre toutes les entités du graphe : personnage vers faction, faction vers personnage et faction vers faction, avec le même éditeur et le même rendu que les liens entre personnages.
+- La cible du glisser respecte la forme visible des factions rectangulaires, elliptiques et polygonales ; les factions compatibles sont mises en évidence pendant le geste.
+- L’éditeur de faction est réorganisé en sections Identité, Forme et dimensions et Apparence, avec un aperçu actualisé en direct.
+- La liste d’ajout de personnages est retirée de l’éditeur de faction. L’appartenance continue d’être déterminée directement sur le graphe en déplaçant les personnages dans les groupes.
+- **Alt + glisser** remplace **Maj + glisser** pour déplacer uniquement la forme d’une faction sans ses membres.
+
 ## 1.6.0 — 2026-08-10
 
 - Le graphe utilise désormais des mutations atomiques (`moveEntities`, création, modification et suppression de liens ou d’entités) au lieu de sauvegarder une copie complète avec une révision globale.
