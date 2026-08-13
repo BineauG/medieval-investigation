@@ -64,8 +64,29 @@
 .mit-form code { user-select: all; overflow-wrap: anywhere; }
 .mit-card-editor-preview-wrap { display: flex; justify-content: center; padding: .25rem; }
 .mit-card-editor-preview { width: min(100%, 22rem); max-height: 13rem; object-fit: contain; border: 1px solid #8c6f45; background: #19130f; }
-.mit-member-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .35rem; max-height: 13rem; overflow: auto; border: 1px solid #716052; padding: .65rem; }
-.mit-member-list label { display: flex; gap: .35rem; align-items: center; }
+.mit-faction-form .window-content { padding: 0; overflow: auto; }
+.mit-faction-editor__layout { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: .85rem; padding: .85rem; align-items: start; }
+.mit-faction-editor__fields { display: grid; gap: .7rem; min-width: 0; }
+.mit-faction-panel { display: grid; gap: .65rem; padding: .75rem; background: linear-gradient(145deg, rgba(117, 86, 52, .18), rgba(31, 24, 20, .48)); border: 1px solid #755e45; border-radius: 6px; box-shadow: inset 0 1px #d6b8791f; }
+.mit-faction-panel__heading { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .55rem; align-items: start; padding-bottom: .55rem; border-bottom: 1px solid #6e5948; }
+.mit-faction-panel__heading > i { display: grid; place-items: center; width: 2rem; height: 2rem; color: #f0cf7a; background: #201814; border: 1px solid #816741; border-radius: 50%; }
+.mit-faction-panel__heading h2 { margin: 0; color: #f4e5c9; font: 400 1.08rem "Almendra SC", Georgia, serif; letter-spacing: .035em; }
+.mit-faction-panel__heading p { margin: .12rem 0 0; color: #bfae98; font-size: .78rem; line-height: 1.25; }
+.mit-faction-field { display: grid; gap: .28rem; min-width: 0; }
+.mit-faction-field > label { color: #e6d5b9; font-size: .8rem; font-weight: 700; }
+.mit-faction-field input:not([type="color"]), .mit-faction-field select, .mit-faction-field textarea { width: 100%; min-width: 0; }
+.mit-faction-field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.mit-faction-color { width: 100%; height: 2.2rem; padding: .15rem; cursor: pointer; }
+.mit-faction-range { display: grid; grid-template-columns: minmax(0, 1fr) 3.8rem; gap: .6rem; align-items: center; }
+.mit-faction-range input { width: 100%; }
+.mit-faction-range output { padding: .25rem .35rem; color: #221812; text-align: center; font-weight: 700; background: #e6d5ad; border: 1px solid #775a36; border-radius: 3px; }
+.mit-faction-preview { position: sticky; top: .85rem; display: grid; gap: .65rem; padding: .8rem; overflow: hidden; background: radial-gradient(circle at 50% 36%, #dfc994, #bca36f); border: 1px solid #8c6e3f; border-radius: 7px; box-shadow: inset 0 0 0 1px #f1d99555, 0 .4rem 1.1rem #0006; }
+.mit-faction-preview::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .18; background: repeating-linear-gradient(0deg, transparent 0 7px, #4d361f 8px); mix-blend-mode: multiply; }
+.mit-faction-preview__eyebrow { position: relative; z-index: 1; color: #3c2817; font-size: .76rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.mit-faction-preview svg { position: relative; z-index: 1; display: block; width: 100%; min-height: 10rem; filter: drop-shadow(0 .25rem .3rem #3b241f66); }
+.mit-faction-preview [hidden] { display: none; }
+.mit-faction-preview__name { fill: #f1dfc2; font: 700 15px Georgia, serif; paint-order: stroke; stroke: #1b1411; stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
+.mit-faction-preview p { position: relative; z-index: 1; margin: 0; color: #4c351f; font-size: .76rem; line-height: 1.3; }
 
 .mit-context-menu {
   position: fixed;
@@ -96,6 +117,7 @@
 .mit-graph-faction > rect:not(.mit-resize-handle), .mit-graph-faction > ellipse, .mit-graph-faction > polygon { vector-effect: non-scaling-stroke; }
 .mit-faction-label { fill: #f1dfc2; font: 700 20px Georgia, serif; paint-order: stroke; stroke: #1b1411; stroke-width: 4px; stroke-linejoin: round; }
 .mit-graph-faction.is-selected > rect:not(.mit-resize-handle), .mit-graph-faction.is-selected > ellipse, .mit-graph-faction.is-selected > polygon { filter: drop-shadow(0 0 7px #edc35f); stroke: #edc35f !important; }
+.mit-graph-faction.is-relation-target > rect:not(.mit-resize-handle), .mit-graph-faction.is-relation-target > ellipse, .mit-graph-faction.is-relation-target > polygon { filter: drop-shadow(0 0 9px #8d1717); stroke: #8d1717 !important; }
 .mit-resize-handle { fill: #e3bb5b; stroke: #24180d; stroke-width: 2; cursor: nwse-resize; vector-effect: non-scaling-stroke; }
 
 .mit-graph-node { cursor: move; }
@@ -125,4 +147,6 @@
   .mit-asset-row > label { grid-column: 1 / -1; }
   .mit-asset-preview-frame { grid-column: 1; width: 4.5rem; height: 4rem; }
   .mit-asset-controls { grid-column: 2; }
+  .mit-faction-editor__layout { grid-template-columns: 1fr; }
+  .mit-faction-preview { position: static; grid-row: 1; }
 }

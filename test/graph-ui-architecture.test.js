@@ -5,6 +5,7 @@ import {
   allocateEdgeLanes,
   edgeCurve,
   edgeLabelPoint,
+  entityContainsPoint,
   pointOnEdgeCurve
 } from "../scripts/graph/relation-graph-renderer.js";
 import { RELATION_PRESETS } from "../scripts/constants.js";
@@ -29,22 +30,58 @@ test("graph changes use immediate collaborative mutations while Save flushes the
   assert.doesNotMatch(settings, /register\("autoSaveGraph"|register\("saveDebounce"/u);
 });
 
-test("relations are created by Shift-dragging from one actor token to another", () => {
+test("relations are created by Shift-dragging between characters and factions", () => {
   const renderer = fs.readFileSync(new URL("../scripts/graph/relation-graph-renderer.js", import.meta.url), "utf8");
   const app = fs.readFileSync(new URL("../scripts/graph/relation-graph-app.js", import.meta.url), "utf8");
   const graphTemplate = fs.readFileSync(new URL("../templates/graph/relation-graph.hbs", import.meta.url), "utf8");
   const editorTemplate = fs.readFileSync(new URL("../templates/graph/relation-editor.hbs", import.meta.url), "utf8");
 
-  assert.match(renderer, /entity\.kind === "actor"[\s\S]*event\.shiftKey/u);
+  assert.match(renderer, /this\.#app\.canManageEdges && event\.button === 0 && event\.shiftKey/u);
   assert.match(renderer, /#beginRelationDrag\(event, entity\)/u);
+  assert.match(renderer, /#entityAt\(pointer\.clientX, pointer\.clientY, source\.id\)/u);
   assert.match(renderer, /this\.#app\.createRelation\(source\.id, completedTargetId\)/u);
   assert.match(renderer, /class: "mit-edge-preview"/u);
   assert.match(app, /new RelationEditor\(\{[\s\S]*sourceId,[\s\S]*targetId,[\s\S]*directed: true/u);
+  assert.match(app, /const source = this\.entity\(sourceId\);[\s\S]*const target = this\.entity\(targetId\);[\s\S]*if \(!source \|\| !target\) return/u);
   assert.doesNotMatch(graphTemplate, /data-action="relation"/u);
   assert.doesNotMatch(editorTemplate, /name="directed"/u);
   assert.match(editorTemplate, /name="mutual"/u);
   assert.match(graphTemplate, /orient="auto-start-reverse"/u);
   assert.match(renderer, /"marker-start": edge\.mutual/u);
+});
+
+test("relation targeting follows actor and faction shapes", () => {
+  const actor = { kind: "actor", x: 10, y: 20, width: 100, height: 80 };
+  const rectangle = { kind: "faction", shape: "rounded-rectangle", x: 0, y: 0, width: 200, height: 100 };
+  const ellipse = { kind: "faction", shape: "ellipse", x: 0, y: 0, width: 200, height: 100 };
+  const polygon = { kind: "faction", shape: "polygon", x: 0, y: 0, width: 200, height: 100 };
+
+  assert.equal(entityContainsPoint(actor, { x: 50, y: 50 }), true);
+  assert.equal(entityContainsPoint(actor, { x: 5, y: 50 }), false);
+  assert.equal(entityContainsPoint(rectangle, { x: 5, y: 5 }), true);
+  assert.equal(entityContainsPoint(ellipse, { x: 100, y: 50 }), true);
+  assert.equal(entityContainsPoint(ellipse, { x: 5, y: 5 }), false);
+  assert.equal(entityContainsPoint(polygon, { x: 100, y: 50 }), true);
+  assert.equal(entityContainsPoint(polygon, { x: 5, y: 5 }), false);
+});
+
+test("the faction editor is structured, previews its shape, and does not edit membership", () => {
+  const app = fs.readFileSync(new URL("../scripts/graph/relation-graph-app.js", import.meta.url), "utf8");
+  const editor = fs.readFileSync(new URL("../scripts/graph/faction-editor.js", import.meta.url), "utf8");
+  const template = fs.readFileSync(new URL("../templates/graph/faction-editor.hbs", import.meta.url), "utf8");
+  const css = fs.readFileSync(new URL("../styles/medieval-investigation-toolkit.css", import.meta.url), "utf8");
+
+  assert.match(template, /FactionEditor\.Identity/u);
+  assert.match(template, /FactionEditor\.Geometry/u);
+  assert.match(template, /FactionEditor\.Appearance/u);
+  assert.match(template, /data-faction-preview/u);
+  assert.doesNotMatch(template, /memberNodeIds|FactionEditor\.Members/u);
+  assert.doesNotMatch(editor, /memberOptions|memberNodeIds/u);
+  assert.doesNotMatch(app, /memberOptions/u);
+  assert.match(editor, /synchronizePreview/u);
+  assert.match(css, /\.mit-faction-editor__layout/u);
+  assert.match(css, /\.mit-graph-faction\.is-relation-target/u);
+  assert.match(app, /changedFields\(faction, updated, \["name", "description", "shape", "width", "height", "style"\]\)/u);
 });
 
 test("actor nodes render only their token and reveal the name on hover", () => {
@@ -216,6 +253,16 @@ test("relation labels can be created, sorted, persisted, and deleted with their 
   assert.match(data, /state\.edges = state\.edges\.filter\(edge => normalizedLabel\(edge\.label\) !== name\)/u);
   assert.match(css, /\.mit-form \.mit-relation-color \{ flex: 0 0 5rem; width: 5rem; min-width: 5rem; max-width: 5rem;/u);
   assert.match(css, /\.mit-form \.mit-relation-width \{ flex: 0 0 3\.5rem; width: 3\.5rem; min-width: 3\.5rem; max-width: 3\.5rem;/u);
+});
+
+test("polygon relations stop on the visible faction outline", () => {
+  const source = { id: "F", kind: "faction", shape: "polygon", x: 0, y: 0, width: 200, height: 100 };
+  const target = { id: "A", kind: "actor", x: -300, y: -200, width: 100, height: 100 };
+  const curve = edgeCurve(source, target);
+
+  assert.ok(curve.a.x > 0);
+  assert.ok(curve.a.y > 0);
+  assert.equal(entityContainsPoint(source, curve.a), true);
 });
 
 test("players can move actor nodes and manage links without receiving node editors", () => {

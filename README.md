@@ -82,13 +82,13 @@ Déposer un Actor sur le SVG. Son image utilise, dans l’ordre, `prototypeToken
 
 ### Factions
 
-Utiliser **Nouvelle faction**, choisir rectangle arrondi, ellipse ou polygone fermé, puis régler nom, taille et style. Déposer un personnage dans la forme ajoute explicitement son appartenance sans la retirer lorsqu’il en sort. L’éditeur de faction et le menu contextuel permettent aussi d’ajouter ou retirer des membres. Un personnage peut avoir plusieurs badges de faction.
+Utiliser **Nouvelle faction**, puis configurer son identité, sa forme, ses dimensions et son apparence dans l’éditeur avec aperçu en direct. Déposer un personnage dans la forme ajoute explicitement son appartenance sans la retirer lorsqu’il en sort. L’éditeur ne contient pas de liste de personnages : l’appartenance se gère directement sur le graphe. Un personnage peut appartenir à plusieurs factions.
 
-Glisser une faction déplace par défaut sa forme et ses membres visibles. Maintenir `Maj` déplace uniquement la forme. La poignée de redimensionnement apparaît sur la faction sélectionnée.
+Glisser une faction déplace par défaut sa forme et ses membres visibles. Maintenir `Alt` déplace uniquement la forme. La poignée de redimensionnement apparaît sur la faction sélectionnée.
 
 ### Relations
 
-Maintenir `Maj`, glisser depuis un personnage source et relâcher sur un autre personnage. L’éditeur s’ouvre alors pour choisir le libellé, la couleur, l’épaisseur et le caractère mutuel de la relation. Ce geste est disponible au MJ comme aux joueurs.
+Maintenir `Maj`, glisser depuis un personnage ou une faction et relâcher sur une autre entité. Les quatre combinaisons sont prises en charge : personnage↔personnage, personnage↔faction, faction↔personnage et faction↔faction. L’éditeur s’ouvre alors pour choisir le libellé, la couleur, l’épaisseur et le caractère mutuel de la relation. Ce geste est disponible au MJ comme aux joueurs.
 
 Les relations directionnelles affichent une flèche. Le double-clic ou le menu contextuel ouvre l’éditeur. Le graphe prend en charge zoom à la molette, déplacement de vue, ajustement à la fenêtre, suppression clavier, annuler/rétablir, synchronisation, import et export JSON.
 
