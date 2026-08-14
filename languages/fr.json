@@ -105,24 +105,12 @@
       "VideoUnsupported": "Les contenus vidéo ne sont pas pris en charge dans cette version."
     },
     "FactionEditor": {
-      "Appearance": "Apparence",
-      "AppearanceHint": "Choisissez les teintes et la présence visuelle du groupe.",
-      "Description": "Description",
       "Fill": "Fond",
-      "Geometry": "Forme et dimensions",
-      "GeometryHint": "Définissez la zone occupée par la faction sur le graphe.",
-      "Height": "Hauteur",
-      "Identity": "Identité",
-      "IdentityHint": "Nommez le groupe et précisez son rôle dans l’enquête.",
       "Name": "Nom",
       "Opacity": "Opacité",
-      "Preview": "Aperçu",
-      "PreviewHint": "Les liens pourront partir du contour de cette forme ou y aboutir.",
       "Shape": "Forme fermée",
       "Stroke": "Bordure",
-      "StrokeWidth": "Épaisseur",
-      "Title": "Faction",
-      "Width": "Largeur"
+      "Title": "Faction"
     },
     "CustomNodeEditor": {
       "Browse": "Parcourir les assets",
@@ -135,7 +123,7 @@
       "AriaLabel": "Canevas du graphe de relations",
       "DefaultName": "Relations",
       "Fit": "Ajuster",
-      "Help": "Déposez un Actor ici ou utilisez Nouveau nœud. Maj + glisser entre personnages et factions : créer une relation directionnelle. Molette : zoom. Glisser le fond : déplacer la vue. Alt + glisser une faction : déplacer uniquement sa forme.",
+      "Help": "Déposez un Actor ici ou utilisez Nouveau nœud. Maj + glisser entre personnages et factions : créer une relation directionnelle. Molette : zoom. Clic droit + glisser le fond : déplacer la vue. Alt + glisser une faction : déplacer uniquement sa forme.",
       "NewNode": "Nouveau nœud",
       "NewFaction": "Nouvelle faction",
       "NewRelation": "Nouvelle relation",

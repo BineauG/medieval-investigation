@@ -65,23 +65,21 @@ test("relation targeting follows actor and faction shapes", () => {
   assert.equal(entityContainsPoint(polygon, { x: 5, y: 5 }), false);
 });
 
-test("the faction editor is structured, previews its shape, and does not edit membership", () => {
+test("the faction editor exposes only the five requested appearance fields", () => {
   const app = fs.readFileSync(new URL("../scripts/graph/relation-graph-app.js", import.meta.url), "utf8");
   const editor = fs.readFileSync(new URL("../scripts/graph/faction-editor.js", import.meta.url), "utf8");
   const template = fs.readFileSync(new URL("../templates/graph/faction-editor.hbs", import.meta.url), "utf8");
   const css = fs.readFileSync(new URL("../styles/medieval-investigation-toolkit.css", import.meta.url), "utf8");
 
-  assert.match(template, /FactionEditor\.Identity/u);
-  assert.match(template, /FactionEditor\.Geometry/u);
-  assert.match(template, /FactionEditor\.Appearance/u);
-  assert.match(template, /data-faction-preview/u);
-  assert.doesNotMatch(template, /memberNodeIds|FactionEditor\.Members/u);
-  assert.doesNotMatch(editor, /memberOptions|memberNodeIds/u);
+  const fieldNames = [...template.matchAll(/name="([^"]+)"/gu)].map(match => match[1]);
+  assert.deepEqual(fieldNames, ["name", "shape", "fill", "stroke", "fillOpacity"]);
+  assert.doesNotMatch(template, /description|width|height|strokeWidth|data-faction-preview|memberNodeIds/u);
+  assert.doesNotMatch(editor, /synchronizePreview|memberOptions|memberNodeIds/u);
   assert.doesNotMatch(app, /memberOptions/u);
-  assert.match(editor, /synchronizePreview/u);
-  assert.match(css, /\.mit-faction-editor__layout/u);
+  assert.doesNotMatch(css, /\.mit-faction-editor__layout|\.mit-faction-preview/u);
   assert.match(css, /\.mit-graph-faction\.is-relation-target/u);
-  assert.match(app, /changedFields\(faction, updated, \["name", "description", "shape", "width", "height", "style"\]\)/u);
+  assert.match(editor, /style: \{\s*\.\.\.instance\.#faction\.style,/u);
+  assert.match(app, /changedFields\(faction, updated, \["name", "shape", "style"\]\)/u);
 });
 
 test("actor nodes render only their token and reveal the name on hover", () => {
@@ -105,6 +103,23 @@ test("directional curves stop at token boundaries so arrowheads remain visible",
   assert.deepEqual(curve.a, { x: 100, y: 50 });
   assert.deepEqual(curve.b, { x: 300, y: 50 });
   assert.match(curve.d, /^M 100 50 C /u);
+});
+
+test("short faction relations leave the border without curving back inside", () => {
+  const source = { id: "F", kind: "faction", shape: "rounded-rectangle", x: 0, y: 0, width: 500, height: 350 };
+  const target = { id: "A", kind: "actor", x: 520, y: 125, width: 100, height: 100 };
+  const curve = edgeCurve(source, target);
+
+  assert.deepEqual(curve.a, { x: 500, y: 175 });
+  assert.deepEqual(curve.b, { x: 520, y: 175 });
+  for (const point of curve.segments[0]) assert.ok(point.x >= 500);
+});
+
+test("the graph background pans only with the right mouse button", () => {
+  const renderer = fs.readFileSync(new URL("../scripts/graph/relation-graph-renderer.js", import.meta.url), "utf8");
+
+  assert.match(renderer, /#onBackgroundPointerDown\(event\) \{[\s\S]*?if \(event\.button !== 2\) return;\s*event\.preventDefault\(\);/u);
+  assert.match(renderer, /this\.#listen\(svg, "contextmenu",[\s\S]*?event\.preventDefault\(\);/u);
 });
 
 test("opposite relations receive separate lanes and arrow tangents aim at their targets", () => {

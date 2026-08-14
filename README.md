@@ -82,7 +82,7 @@ Déposer un Actor sur le SVG. Son image utilise, dans l’ordre, `prototypeToken
 
 ### Factions
 
-Utiliser **Nouvelle faction**, puis configurer son identité, sa forme, ses dimensions et son apparence dans l’éditeur avec aperçu en direct. Déposer un personnage dans la forme ajoute explicitement son appartenance sans la retirer lorsqu’il en sort. L’éditeur ne contient pas de liste de personnages : l’appartenance se gère directement sur le graphe. Un personnage peut appartenir à plusieurs factions.
+Utiliser **Nouvelle faction**, puis régler simplement son nom, sa forme fermée, ses couleurs de fond et de bordure ainsi que son opacité. La taille se règle ensuite directement sur le graphe avec la poignée de redimensionnement. Déposer un personnage dans la forme ajoute explicitement son appartenance sans la retirer lorsqu’il en sort. L’éditeur ne contient pas de liste de personnages : l’appartenance se gère directement sur le graphe. Un personnage peut appartenir à plusieurs factions.
 
 Glisser une faction déplace par défaut sa forme et ses membres visibles. Maintenir `Alt` déplace uniquement la forme. La poignée de redimensionnement apparaît sur la faction sélectionnée.
 
@@ -90,7 +90,7 @@ Glisser une faction déplace par défaut sa forme et ses membres visibles. Maint
 
 Maintenir `Maj`, glisser depuis un personnage ou une faction et relâcher sur une autre entité. Les quatre combinaisons sont prises en charge : personnage↔personnage, personnage↔faction, faction↔personnage et faction↔faction. L’éditeur s’ouvre alors pour choisir le libellé, la couleur, l’épaisseur et le caractère mutuel de la relation. Ce geste est disponible au MJ comme aux joueurs.
 
-Les relations directionnelles affichent une flèche. Le double-clic ou le menu contextuel ouvre l’éditeur. Le graphe prend en charge zoom à la molette, déplacement de vue, ajustement à la fenêtre, suppression clavier, annuler/rétablir, synchronisation, import et export JSON.
+Les relations directionnelles affichent une flèche. Le double-clic ou le menu contextuel ouvre l’éditeur. Le graphe prend en charge le zoom à la molette, le déplacement de la vue par **clic droit + glisser sur le fond**, l’ajustement à la fenêtre, la suppression clavier, annuler/rétablir, la synchronisation, ainsi que l’import et l’export JSON.
 
 Le graphe est collaboratif. Chaque création, modification, suppression ou déplacement terminé devient une mutation atomique envoyée à l’autorité MJ. Plusieurs utilisateurs peuvent donc travailler sur des nœuds ou relations distincts sans sauvegarde globale ni écrasement. Pendant le glissement d’un nœud, les autres fenêtres reçoivent un aperçu limité à vingt images par seconde ; la position définitive est écrite une seule fois au relâchement. Si deux utilisateurs modifient simultanément le même champ du même élément, la première mutation est conservée et la seconde est resynchronisée avec un message de conflit.
 
