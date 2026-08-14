@@ -176,17 +176,22 @@ export function edgeCurve(source, target, laneOffset = 0) {
   const sourceCenter = entityCenter(source);
   const targetCenter = entityCenter(target);
   const lane = canonicalLaneVector(source, target, laneOffset);
-  const midpoint = {
+  const laneMidpoint = {
     x: (sourceCenter.x + targetCenter.x) / 2 + lane.x,
     y: (sourceCenter.y + targetCenter.y) / 2 + lane.y
   };
-  const a = boundaryPoint(source, midpoint);
-  const b = boundaryPoint(target, midpoint);
+  const a = boundaryPoint(source, laneMidpoint);
+  const b = boundaryPoint(target, laneMidpoint);
+  const midpoint = {
+    x: (a.x + b.x) / 2 + lane.x,
+    y: (a.y + b.y) / 2 + lane.y
+  };
   const forward = vector(sourceCenter, targetCenter);
-  const startDirection = vector(sourceCenter, midpoint);
+  const startDirection = vector(sourceCenter, a);
   const endDirection = vector(b, targetCenter);
-  const handle = Math.min(180, Math.max(24, forward.length * 0.24));
-  const midpointHandle = Math.min(90, handle * 0.55);
+  const boundaryDistance = Math.hypot(b.x - a.x, b.y - a.y);
+  const handle = Math.min(180, Math.max(4, boundaryDistance * 0.28));
+  const midpointHandle = Math.min(90, Math.max(2, boundaryDistance * 0.14));
   const first = [
     a,
     { x: a.x + startDirection.x * handle, y: a.y + startDirection.y * handle },
@@ -261,6 +266,9 @@ export class RelationGraphRenderer {
     this.#nodesLayer = svg.querySelector("[data-graph-nodes]");
     this.#listen(svg, "wheel", event => this.#onWheel(event), { passive: false });
     this.#listen(svg, "pointerdown", event => this.#onBackgroundPointerDown(event));
+    this.#listen(svg, "contextmenu", event => {
+      if (!event.target.closest?.("[data-entity-id], [data-edge-id]")) event.preventDefault();
+    });
     this.#listen(svg, "dragover", event => event.preventDefault());
     this.#listen(svg, "drop", event => this.#app.handleDrop(event));
   }
@@ -621,7 +629,8 @@ export class RelationGraphRenderer {
   #onBackgroundPointerDown(event) {
     if (event.target.closest?.("[data-entity-id], [data-edge-id]")) return;
     this.#app.select(null);
-    if (event.button !== 0 && event.button !== 1) return;
+    if (event.button !== 2) return;
+    event.preventDefault();
     const viewport = this.#app.graph.viewport;
     const start = { x: event.clientX, y: event.clientY, vx: viewport.x, vy: viewport.y };
     const move = pointer => {

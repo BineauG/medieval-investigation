@@ -524,7 +524,7 @@ export class RelationGraphApp extends HandlebarsApplicationMixin(ApplicationV2) 
     if (!this.canManageNodes) return;
     const faction = this.entity(factionId);
     new FactionEditor(clone(faction), async updated => {
-      const changed = changedFields(faction, updated, ["name", "description", "shape", "width", "height", "style"]);
+      const changed = changedFields(faction, updated, ["name", "shape", "style"]);
       if (!Object.keys(changed.changes).length) return;
       await this.#commitMutation(
         { kind: "updateEntity", entityId: factionId, ...changed },

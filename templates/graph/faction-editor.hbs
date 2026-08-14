@@ -1,63 +1,29 @@
 <div class="mit-form-content">
-  <div class="mit-faction-editor__layout">
-    <div class="mit-faction-editor__fields">
-      <section class="mit-faction-panel">
-        <header class="mit-faction-panel__heading">
-          <i class="fa-solid fa-signature" aria-hidden="true"></i>
-          <div><h2>{{localize "medieval-investigation-toolkit.FactionEditor.Identity"}}</h2><p>{{localize "medieval-investigation-toolkit.FactionEditor.IdentityHint"}}</p></div>
-        </header>
-        <div class="mit-faction-field">
-          <label for="mit-faction-name">{{localize "medieval-investigation-toolkit.FactionEditor.Name"}}</label>
-          <input id="mit-faction-name" name="name" type="text" value="{{faction.name}}" required autofocus autocomplete="off">
-        </div>
-        <div class="mit-faction-field">
-          <label for="mit-faction-description">{{localize "medieval-investigation-toolkit.FactionEditor.Description"}}</label>
-          <textarea id="mit-faction-description" name="description" rows="3">{{faction.description}}</textarea>
-        </div>
-      </section>
-
-      <section class="mit-faction-panel">
-        <header class="mit-faction-panel__heading">
-          <i class="fa-solid fa-draw-polygon" aria-hidden="true"></i>
-          <div><h2>{{localize "medieval-investigation-toolkit.FactionEditor.Geometry"}}</h2><p>{{localize "medieval-investigation-toolkit.FactionEditor.GeometryHint"}}</p></div>
-        </header>
-        <div class="mit-faction-field">
-          <label for="mit-faction-shape">{{localize "medieval-investigation-toolkit.FactionEditor.Shape"}}</label>
-          <select id="mit-faction-shape" name="shape"><option value="rounded-rectangle" {{#if rounded}}selected{{/if}}>{{localize "medieval-investigation-toolkit.Shapes.RoundedRectangle"}}</option><option value="ellipse" {{#if ellipse}}selected{{/if}}>{{localize "medieval-investigation-toolkit.Shapes.Ellipse"}}</option><option value="polygon" {{#if polygon}}selected{{/if}}>{{localize "medieval-investigation-toolkit.Shapes.Polygon"}}</option></select>
-        </div>
-        <div class="mit-faction-field-grid">
-          <div class="mit-faction-field"><label for="mit-faction-width">{{localize "medieval-investigation-toolkit.FactionEditor.Width"}}</label><input id="mit-faction-width" name="width" type="number" min="100" value="{{faction.width}}"></div>
-          <div class="mit-faction-field"><label for="mit-faction-height">{{localize "medieval-investigation-toolkit.FactionEditor.Height"}}</label><input id="mit-faction-height" name="height" type="number" min="80" value="{{faction.height}}"></div>
-        </div>
-      </section>
-
-      <section class="mit-faction-panel">
-        <header class="mit-faction-panel__heading">
-          <i class="fa-solid fa-palette" aria-hidden="true"></i>
-          <div><h2>{{localize "medieval-investigation-toolkit.FactionEditor.Appearance"}}</h2><p>{{localize "medieval-investigation-toolkit.FactionEditor.AppearanceHint"}}</p></div>
-        </header>
-        <div class="mit-faction-field-grid">
-          <div class="mit-faction-field"><label for="mit-faction-fill">{{localize "medieval-investigation-toolkit.FactionEditor.Fill"}}</label><input class="mit-faction-color" id="mit-faction-fill" name="fill" type="color" value="{{faction.style.fill}}"></div>
-          <div class="mit-faction-field"><label for="mit-faction-stroke">{{localize "medieval-investigation-toolkit.FactionEditor.Stroke"}}</label><input class="mit-faction-color" id="mit-faction-stroke" name="stroke" type="color" value="{{faction.style.stroke}}"></div>
-        </div>
-        <div class="mit-faction-field">
-          <label for="mit-faction-opacity">{{localize "medieval-investigation-toolkit.FactionEditor.Opacity"}}</label>
-          <div class="mit-faction-range"><input id="mit-faction-opacity" name="fillOpacity" type="range" min="0" max="1" step="0.05" value="{{faction.style.fillOpacity}}"><output data-opacity-output></output></div>
-        </div>
-        <div class="mit-faction-field"><label for="mit-faction-stroke-width">{{localize "medieval-investigation-toolkit.FactionEditor.StrokeWidth"}}</label><input id="mit-faction-stroke-width" name="strokeWidth" type="number" min="1" max="20" value="{{faction.style.strokeWidth}}"></div>
-      </section>
+  <div class="mit-form-body">
+    <div class="form-group">
+      <label for="mit-faction-name">{{localize "medieval-investigation-toolkit.FactionEditor.Name"}}</label>
+      <input id="mit-faction-name" name="name" type="text" value="{{faction.name}}" required autofocus autocomplete="off">
     </div>
-
-    <aside class="mit-faction-preview" aria-label="{{localize 'medieval-investigation-toolkit.FactionEditor.Preview'}}">
-      <span class="mit-faction-preview__eyebrow"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "medieval-investigation-toolkit.FactionEditor.Preview"}}</span>
-      <svg data-faction-preview viewBox="0 0 240 140" role="img">
-        <rect data-preview-shape="rounded-rectangle"></rect>
-        <ellipse data-preview-shape="ellipse"></ellipse>
-        <polygon data-preview-shape="polygon"></polygon>
-        <text data-preview-name class="mit-faction-preview__name">{{faction.name}}</text>
-      </svg>
-      <p>{{localize "medieval-investigation-toolkit.FactionEditor.PreviewHint"}}</p>
-    </aside>
+    <div class="form-group">
+      <label for="mit-faction-shape">{{localize "medieval-investigation-toolkit.FactionEditor.Shape"}}</label>
+      <select id="mit-faction-shape" name="shape">
+        <option value="rounded-rectangle" {{#if rounded}}selected{{/if}}>{{localize "medieval-investigation-toolkit.Shapes.RoundedRectangle"}}</option>
+        <option value="ellipse" {{#if ellipse}}selected{{/if}}>{{localize "medieval-investigation-toolkit.Shapes.Ellipse"}}</option>
+        <option value="polygon" {{#if polygon}}selected{{/if}}>{{localize "medieval-investigation-toolkit.Shapes.Polygon"}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mit-faction-fill">{{localize "medieval-investigation-toolkit.FactionEditor.Fill"}}</label>
+      <input id="mit-faction-fill" name="fill" type="color" value="{{faction.style.fill}}">
+    </div>
+    <div class="form-group">
+      <label for="mit-faction-stroke">{{localize "medieval-investigation-toolkit.FactionEditor.Stroke"}}</label>
+      <input id="mit-faction-stroke" name="stroke" type="color" value="{{faction.style.stroke}}">
+    </div>
+    <div class="form-group">
+      <label for="mit-faction-opacity">{{localize "medieval-investigation-toolkit.FactionEditor.Opacity"}}</label>
+      <input id="mit-faction-opacity" name="fillOpacity" type="number" min="0" max="1" step="0.05" value="{{faction.style.fillOpacity}}">
+    </div>
   </div>
   <footer class="form-footer"><button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "medieval-investigation-toolkit.Actions.Save"}}</button></footer>
 </div>

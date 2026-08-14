@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.2 — 2026-08-14
+
+- L’éditeur de faction est simplifié aux cinq réglages essentiels : nom, forme fermée, couleur de fond, couleur de bordure et opacité. La description, les dimensions, l’épaisseur de bordure et l’aperçu sont retirés du formulaire.
+- Le déplacement de la vue du graphe utilise désormais **clic droit + glisser** sur le fond ; le clic gauche reste disponible pour la sélection et les interactions avec les entités.
+- Les relations courtes partant d’une faction quittent immédiatement son contour : leurs poignées de courbe sont calculées depuis les bordures afin d’éviter que la base du lien ne s’enfonce dans la forme.
+
 ## 1.6.1 — 2026-08-13
 
 - Les relations peuvent désormais être créées par **Maj + glisser** entre toutes les entités du graphe : personnage vers faction, faction vers personnage et faction vers faction, avec le même éditeur et le même rendu que les liens entre personnages.
