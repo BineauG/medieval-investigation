@@ -1,11 +1,3 @@
-@font-face {
-  font-family: "Almendra SC";
-  src: url("../assets/fonts/AlmendraSC-Regular.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
 .medieval-investigation-toolkit {
   --mit-ink: #e7dcc5;
   --mit-dark: #201a17;

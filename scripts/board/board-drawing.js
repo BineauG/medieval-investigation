@@ -1,4 +1,4 @@
-import { BOARD_PIN_SCALE, DEFAULT_DEATH_OVERLAY_OPACITY, DEFEATED_OVERLAY_IMAGE, MODULE_ID } from "../constants.js";
+import { DEFAULT_DEATH_OVERLAY_OPACITY, DEFEATED_OVERLAY_IMAGE, MODULE_ID } from "../constants.js";
 import { createText, drawRoundedRect } from "../compatibility/pixi-graphics.js";
 import { drawingDimensions, drawingElevation, confirmDialog } from "../compatibility/foundry-version.js";
 import { migrateCard } from "../utils/migrations.js";
@@ -6,10 +6,9 @@ import { canViewDocument, resolveUuid } from "../utils/documents.js";
 import { cardPresentation } from "./card-factory.js";
 import { boardController } from "./board-controller.js";
 import { openBoardCardSheet } from "./board-card-sheet.js";
-import { openBoardNoteSheet } from "./board-note-sheet.js";
 import { boardConnectionLayer } from "./board-connection-layer.js";
+import { boardPinSize } from "./board-pin.js";
 import { getSetting } from "../settings.js";
-import { normalizeNoteText } from "./note-data.js";
 import {
   loadOptimizedTexture,
   MAX_DECORATION_TEXTURE_DIMENSION,
@@ -20,15 +19,6 @@ let installedClass = null;
 let openMenu = null;
 
 const MEDIEVAL_TITLE_FONT = '"Old English Text MT", "Copperplate Gothic Bold", "Palatino Linotype", Georgia, serif';
-const NOTE_FONT = '"Almendra SC", "Palatino Linotype", Georgia, serif';
-let noteFontPromise = null;
-
-async function ensureNoteFont() {
-  const fontSet = globalThis.document?.fonts;
-  if (!fontSet?.load) return;
-  noteFontPromise ||= fontSet.load('16px "Almendra SC"').catch(() => []);
-  await noteFontPromise;
-}
 
 function isBoardCard(document) {
   return document?.flags?.[MODULE_ID]?.kind === "board-card";
@@ -102,12 +92,8 @@ async function deleteCard(drawing) {
 
 function cardMenu(drawing, event) {
   const cards = boardController.cards(drawing.parent);
-  const isNote = drawing.flags?.[MODULE_ID]?.cardType === "free";
-  const editCard = () => isNote
-    ? openBoardNoteSheet({ drawing })
-    : openBoardCardSheet({ drawing });
   const actions = [
-    ["Edit", editCard],
+    ["Edit", () => openBoardCardSheet({ drawing })],
     ["BringFront", () => boardController.moveCard(drawing.id, {
       z: Math.max(0, ...cards.map(drawingElevation)) + 1
     }, drawing.parent)],
@@ -116,7 +102,7 @@ function cardMenu(drawing, event) {
     }, drawing.parent)]
   ];
   if (game.user.isGM) {
-    if (!isNote) actions.push(["OpenSource", () => openSource(drawing)]);
+    if (drawing.flags?.[MODULE_ID]?.sourceUuid) actions.push(["OpenSource", () => openSource(drawing)]);
     actions.push(["Delete", () => deleteCard(drawing)]);
   }
   showContextMenu(eventPosition(event), actions);
@@ -290,7 +276,7 @@ export function installBoardDrawingClass() {
       this.visible = visible;
       if (this.shape) this.shape.visible = visible;
       if (this._mitArt) this._mitArt.visible = visible;
-      // Investigation Board keeps its notes interactive outside the native
+      // Investigation Board keeps its cards interactive outside the native
       // Drawing tool. Doing the same here lets cards and the separate pin
       // layer work without switching canvas controls.
       this.eventMode = this.visible ? "static" : "none";
@@ -326,11 +312,7 @@ export function installBoardDrawingClass() {
       event.preventDefault?.();
       event.stopImmediatePropagation?.();
       event.stopPropagation?.();
-      if (this.document.flags?.[MODULE_ID]?.cardType === "free") {
-        openBoardNoteSheet({ drawing: this.document });
-      } else {
-        openBoardCardSheet({ drawing: this.document });
-      }
+      openBoardCardSheet({ drawing: this.document });
       return false;
     }
 
@@ -541,49 +523,6 @@ export function installBoardDrawingClass() {
       this._mitFingerprint = fingerprint;
       this._mitRenderedSize = { width, height };
 
-      if (card.cardType === "free") {
-        await ensureNoteFont();
-        const bannerPath = getSetting("noteBannerImage") || "";
-        let banner = bannerPath ? await loadSprite(bannerPath) : null;
-        if (banner) {
-          banner.position.set(0, 0);
-          banner.width = width;
-          banner.height = height;
-          addDisplayChild(art, banner);
-          this._mitBackground = banner;
-        } else {
-          banner = new PIXI.Graphics();
-          drawRoundedRect(banner, 0, 0, width, height, 0, { color: 0x742839, alpha: 1 });
-          addDisplayChild(art, banner);
-          this._mitBackground = banner;
-        }
-        const noteText = normalizeNoteText(card.titleOverride || card.text)
-          || game.i18n.localize(`${MODULE_ID}.Labels.NoteDefault`);
-        const notePadding = Math.max(10, Math.min(width, height) * 0.12);
-        const label = addFittedText(art, noteText, {
-          fontFamily: NOTE_FONT,
-          fontSize: Math.max(14, Math.min(36, width * 0.42, height * 0.14)),
-          fontWeight: "normal",
-          fill: 0x000000,
-          stroke: 0xf3e2bd,
-          strokeThickness: Math.max(1, Math.min(3, width * 0.018)),
-          letterSpacing: Math.max(0, Math.min(2, height * 0.006)),
-          wordWrap: false,
-          align: "center"
-        }, {
-          x: width / 2,
-          y: height / 2,
-          anchorX: 0.5,
-          anchorY: 0.5,
-          maxWidth: Math.max(20, height - notePadding * 2),
-          maxHeight: Math.max(20, width - notePadding * 2),
-          minimumFontSize: 10
-        });
-        label.rotation = getSetting("noteTextDirection") === "left" ? -Math.PI / 2 : Math.PI / 2;
-        boardConnectionLayer.scheduleCardRefresh([this.document.id]);
-        return;
-      }
-
       const radius = Math.max(8, Math.min(20, width * 0.045));
       const genericParchment = `modules/${MODULE_ID}/assets/parchment.svg`;
       const canShowReferenceImage = card.showImage;
@@ -688,7 +627,7 @@ export function installBoardDrawingClass() {
     _getMitPinPosition() {
       const card = migrateCard(this.document.flags[MODULE_ID]);
       const { width } = drawingDimensions(this.document);
-      const size = Math.max(28, Math.min(52, width * 0.17)) * BOARD_PIN_SCALE;
+      const size = boardPinSize(width, getSetting("waxSealScale"));
       return {
         x: Number(this.x ?? this.document.x ?? 0) + width / 2 + Number(card.pin?.offsetX || 0),
         y: Number(this.y ?? this.document.y ?? 0) + Math.max(size * 0.32, Number(card.pin?.offsetY || 0))

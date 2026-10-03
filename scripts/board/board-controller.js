@@ -1,4 +1,4 @@
-import { DEFAULT_CARD_SIZE, DEFAULT_NOTE_SIZE, MODULE_ID } from "../constants.js";
+import { DEFAULT_CARD_SIZE, MODULE_ID } from "../constants.js";
 import { drawingData, drawingDimensions, drawingElevation } from "../compatibility/foundry-version.js";
 import {
   addConnection,
@@ -16,7 +16,6 @@ import { getSetting } from "../settings.js";
 import { socketService } from "./board-sockets.js";
 import { logger } from "../utils/log.js";
 import { sizeForImageAspectRatio } from "./card-sizing.js";
-import { normalizeNoteText } from "./note-data.js";
 import { conflictingFields } from "../utils/concurrency.js";
 
 const BOARD_FLAG = "investigationBoard";
@@ -54,18 +53,6 @@ function sceneById(sceneId) {
 
 function cardFlag(drawing) {
   return drawing?.flags?.[MODULE_ID];
-}
-
-function sanitizeNoteCard(card) {
-  if (card.cardType !== "free") return card;
-  card.titleOverride = normalizeNoteText(card.titleOverride || card.text);
-  card.text = "";
-  card.imageOverride = "";
-  card.sourceUuid = null;
-  card.sourceType = null;
-  card.showName = true;
-  card.showImage = false;
-  return card;
 }
 
 export class BoardController {
@@ -217,7 +204,7 @@ export class BoardController {
   async #createCard(scene, payload, user) {
     const result = validateCardData({ ...payload.card, createdBy: user.id });
     if (!result.valid) throw new Error("Errors.InvalidCard");
-    const card = sanitizeNoteCard(result.value);
+    const card = result.value;
     if (card.sourceUuid) {
       const source = await resolveUuid(card.sourceUuid);
       if (!source) throw new Error("Errors.InvalidUuid");
@@ -232,12 +219,8 @@ export class BoardController {
     }
     const scale = Number(getSetting("cardScale") || 1);
     const minimum = Number(getSetting("minimumCardSize") || 120);
-    const defaultSize = card.cardType === "free" ? DEFAULT_NOTE_SIZE : DEFAULT_CARD_SIZE;
-    let width = Math.max(minimum, Number(payload.position?.width || defaultSize.width) * scale);
-    let height = Math.max(minimum, Number(payload.position?.height || defaultSize.height) * scale);
-    if (card.cardType === "free" && !Number.isFinite(Number(payload.position?.height))) {
-      height = Math.max(height, width * 2.4);
-    }
+    let width = Math.max(minimum, Number(payload.position?.width || DEFAULT_CARD_SIZE.width) * scale);
+    let height = Math.max(minimum, Number(payload.position?.height || DEFAULT_CARD_SIZE.height) * scale);
     if (card.cardType === "document" && card.imageOverride && !Number.isFinite(Number(payload.position?.height))) {
       const adapted = sizeForImageAspectRatio(payload.position?.imageAspectRatio, { width, minimum });
       if (adapted) ({ width, height } = adapted);
@@ -253,7 +236,7 @@ export class BoardController {
     if (!drawing || cardFlag(drawing)?.kind !== "board-card") throw new Error("Errors.CardMissing");
     const current = migrateCard(cardFlag(drawing));
     const allowed = user.isGM
-      ? ["titleOverride", "imageOverride", "text", "showName", "showImage", "sourceUuid", "sourceType", "pin", "tags"]
+      ? ["titleOverride", "imageOverride", "showName", "showImage", "sourceUuid", "sourceType", "pin", "tags"]
       : ["titleOverride", "tags"];
     const patch = Object.fromEntries(allowed.filter(key => Object.hasOwn(changes, key)).map(key => [key, changes[key]]));
     const changedKeys = Object.keys(patch);
@@ -263,7 +246,7 @@ export class BoardController {
       const normalizedExpected = createCardData({ ...current, ...expectedInput, createdBy: current.createdBy });
       if (conflictingFields(current, normalizedExpected, changedKeys).length) throw new Error("Errors.EditConflict");
     }
-    const next = sanitizeNoteCard(createCardData({ ...current, ...patch, createdBy: current.createdBy }));
+    const next = createCardData({ ...current, ...patch, createdBy: current.createdBy });
     if (next.sourceUuid && next.sourceUuid !== current.sourceUuid) {
       const source = await resolveUuid(next.sourceUuid);
       if (!source) throw new Error("Errors.InvalidUuid");

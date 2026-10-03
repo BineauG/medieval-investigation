@@ -9,8 +9,8 @@ export function canModifyBoard(user, action, _card, _settings = {}) {
   if (!user?.active) return false;
   // Player operations are executed immediately by the active GM authority.
   // The controller still applies field-level validation to card and string
-  // editors, while card deletion and source-document creation remain GM-only.
-  if (action === "createCard") return _card?.cardType === "free";
+  // editors, while card creation and deletion remain GM-only.
+  if (action === "createCard") return false;
   return action === "updateCard"
     || action === "moveCard"
     || action === "createConnection"

@@ -7,8 +7,17 @@ export function migrateCard(input = {}) {
   if (version > CARD_SCHEMA_VERSION) throw new TypeError("Unsupported card schema version");
   const migrated = { ...input };
   if (version === 0) {
-    migrated.cardType ??= migrated.type === "actor" ? "actor" : migrated.sourceUuid ? "document" : "free";
-    migrated.text ??= migrated.note ?? "";
+    migrated.cardType ??= migrated.type === "actor" ? "actor" : "document";
+    migrated.titleOverride ||= migrated.note || migrated.text || "";
+  }
+  if (version < 3 && migrated.cardType === "free") {
+    migrated.cardType = "document";
+    migrated.titleOverride ||= migrated.text || migrated.note || "";
+    migrated.sourceUuid = null;
+    migrated.sourceType = null;
+    migrated.imageOverride = "";
+    migrated.showName = true;
+    migrated.showImage = true;
   }
   return createCardData(migrated);
 }

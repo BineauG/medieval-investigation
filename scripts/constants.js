@@ -2,7 +2,7 @@ export const MODULE_ID = "medieval-investigation-toolkit";
 export const MODULE_TITLE = "Medieval Investigation Toolkit";
 export const LOG_PREFIX = `[${MODULE_TITLE}]`;
 export const SOCKET_NAME = `module.${MODULE_ID}`;
-export const CARD_SCHEMA_VERSION = 2;
+export const CARD_SCHEMA_VERSION = 3;
 export const BOARD_SCHEMA_VERSION = 2;
 export const GRAPH_SCHEMA_VERSION = 4;
 export const GRAPH_ID = "main-relation-graph";
@@ -11,17 +11,13 @@ export const GRAPH_PAGE_FLAG = "relationGraph";
 export const CUSTOM_ASSET_ROOT = `assets/${MODULE_ID}`;
 export const PIN_ASSET_DIRECTORY = `${CUSTOM_ASSET_ROOT}/pins`;
 export const PARCHMENT_ASSET_DIRECTORY = `${CUSTOM_ASSET_ROOT}/parchments`;
-export const NOTE_ASSET_DIRECTORY = `${CUSTOM_ASSET_ROOT}/notes`;
 
 // Stored as an array on each card so additional tags can be introduced later
 // without changing the card format again.
 export const CARD_TAGS = Object.freeze({ Dead: "dead" });
 
-export const DEFAULT_CARD_SIZE = Object.freeze({ width: 260, height: 320 });
-export const DEFAULT_NOTE_SIZE = Object.freeze({ width: 120, height: 320 });
-// The original seal size was already multiplied by 1.2. The 1.3.1 visual
-// increase adds another 30% for every card type: 1.2 × 1.3 = 1.56.
-export const BOARD_PIN_SCALE = 1.56;
+export const DEFAULT_CARD_SIZE = Object.freeze({ width: 220, height: 280 });
+export const DEFAULT_WAX_SEAL_SCALE = 1;
 export const DEFAULT_CONNECTION_STYLE = Object.freeze({ color: "#7b1010", width: 4, sag: 0.12 });
 export const DEFAULT_DEATH_OVERLAY_OPACITY = 0.72;
 // Deliberately muted pigments inspired by the WFRP books and UI. Board

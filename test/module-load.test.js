@@ -52,8 +52,9 @@ test("module entry point registers init and ready hooks against v13/v14 API surf
   const sceneControls = { drawings: { tools: {} }, notes: { tools: {} } };
   callbacks.on.get("getSceneControlButtons")(sceneControls);
   assert.ok(registered.has("cardScale"));
-  assert.ok(registered.has("noteTextDirection"));
-  assert.ok(registered.has("noteBannerImage"));
+  assert.ok(registered.has("waxSealScale"));
+  assert.equal(registered.has("noteTextDirection"), false);
+  assert.equal(registered.has("noteBannerImage"), false);
   assert.ok(registered.has("deathOverlayOpacity"));
   assert.equal(registered.has("deathTagImage"), false);
   assert.equal(registered.has("playersCreateCards"), false);

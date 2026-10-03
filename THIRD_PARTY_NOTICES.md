@@ -1,14 +1,5 @@
 # Third-party notices
 
-## Almendra SC
-
-The bundled note font `assets/fonts/AlmendraSC-Regular.ttf` is Almendra SC by Ana Sanfelippo.
-
-- Source: https://github.com/google/fonts/tree/main/ofl/almendrasc
-- Copyright: Copyright (c) 2011-2012, Ana Sanfelippo
-- License: SIL Open Font License 1.1
-- Complete license copy: `assets/fonts/OFL.txt`
-
 ## Investigation Board
 
 The investigation-board runtime architecture in Medieval Investigation Toolkit 1.1.0 is based on and adapted from Investigation Board 4.10.1:
@@ -18,7 +9,7 @@ The investigation-board runtime architecture in Medieval Investigation Toolkit 1
 - Source: https://github.com/mordachai/investigation-board
 - License: MIT
 
-The adapted concepts and portions include the use of a custom Foundry `Drawing` class for board notes, Drawing interaction hooks, robust Foundry v13 directory-document resolution, and a separate canvas container for pins/connection lines. Audio/media-note features and upstream artwork are not included.
+The adapted concepts and portions include the use of a custom Foundry `Drawing` class for board cards, Drawing interaction hooks, robust Foundry v13 directory-document resolution, and a separate canvas container for pins/connection lines. Audio/media features and upstream artwork are not included.
 
 MIT License
 

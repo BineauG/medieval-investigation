@@ -7,7 +7,7 @@ import {
 } from "../constants.js";
 import { randomId } from "../utils/ids.js";
 
-const CARD_TYPES = new Set(["actor", "document", "free"]);
+const CARD_TYPES = new Set(["actor", "document"]);
 const CARD_TAG_VALUES = new Set(Object.values(CARD_TAGS));
 const STRING_COLOR_VALUES = new Set(Object.values(STRING_COLORS));
 
@@ -31,7 +31,7 @@ export function normalizeCardTags(value) {
 }
 
 export function createCardData(input = {}, { userId = "" } = {}) {
-  const cardType = CARD_TYPES.has(input.cardType) ? input.cardType : "free";
+  const cardType = CARD_TYPES.has(input.cardType) ? input.cardType : "document";
   return {
     schemaVersion: CARD_SCHEMA_VERSION,
     kind: "board-card",
@@ -40,9 +40,6 @@ export function createCardData(input = {}, { userId = "" } = {}) {
     sourceType: text(input.sourceType, 80) || null,
     titleOverride: text(input.titleOverride, 500),
     imageOverride: text(input.imageOverride, 2_000),
-    // Only the dedicated vertical note card owns free text. Actor and
-    // Document cards intentionally contain just their image and title.
-    text: cardType === "free" ? text(input.text) : "",
     showName: input.showName !== false,
     showImage: input.showImage !== false,
     tags: normalizeCardTags(input.tags),

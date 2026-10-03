@@ -15,7 +15,7 @@ export class BoardCardSheet extends HandlebarsApplicationMixin(ApplicationV2) {
   #imageSelectionChanged = false;
 
   constructor({ drawing = null, initial = {}, position = {} } = {}, options = {}) {
-    const suffix = drawing?.id || `${initial.cardType || "free"}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const suffix = drawing?.id || `${initial.cardType || "document"}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     super({ ...options, id: options.id || `${MODULE_ID}-card-sheet-${suffix}` });
     this.#drawing = drawing;
     this.#initial = createCardData(drawing?.flags?.[MODULE_ID] || initial, { userId: game.user.id });
@@ -56,11 +56,9 @@ export class BoardCardSheet extends HandlebarsApplicationMixin(ApplicationV2) {
         .filter(actor => canViewDocument(actor))
         .map(actor => ({ uuid: actor.uuid, name: actor.name, selected: actor.uuid === this.#initial.sourceUuid }))
         .sort((left, right) => left.name.localeCompare(right.name)),
-      sourceName: source?.name || "",
       previewImage: this.#initial.cardType === "document"
         ? (this.#initial.imageOverride || genericParchment)
         : (this.#initial.imageOverride || documentImage(source, "")),
-      sourceMissing: Boolean(this.#initial.sourceUuid && !source),
       isActor: this.#initial.cardType === "actor",
       isDocument: this.#initial.cardType === "document"
     };
@@ -129,7 +127,7 @@ export class BoardCardSheet extends HandlebarsApplicationMixin(ApplicationV2) {
       });
       return;
     }
-    const sourceUuid = cardType === "actor" ? (data.actorUuid || data.sourceUuid) : data.sourceUuid;
+    const sourceUuid = cardType === "actor" ? data.actorUuid : instance.#initial.sourceUuid;
     const card = createCardData({
       ...instance.#initial,
       cardType,

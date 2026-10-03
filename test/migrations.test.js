@@ -2,12 +2,21 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { migrateBoard, migrateCard, migrateGraph } from "../scripts/utils/migrations.js";
 
-test("legacy card fields migrate to schema version 2", () => {
+test("legacy card fields migrate to schema version 3", () => {
   const card = migrateCard({ type: "actor", sourceUuid: "Actor.one", note: "old" });
-  assert.equal(card.schemaVersion, 2);
+  assert.equal(card.schemaVersion, 3);
   assert.equal(card.cardType, "actor");
-  assert.equal(card.text, "");
+  assert.equal(Object.hasOwn(card, "text"), false);
   assert.deepEqual(card.tags, []);
+});
+
+test("legacy free notes become document cards without losing their label", () => {
+  const card = migrateCard({ schemaVersion: 2, cardType: "free", titleOverride: "Piste rouge", text: "ancien texte" });
+  assert.equal(card.schemaVersion, 3);
+  assert.equal(card.cardType, "document");
+  assert.equal(card.titleOverride, "Piste rouge");
+  assert.equal(card.sourceUuid, null);
+  assert.equal(Object.hasOwn(card, "text"), false);
 });
 
 test("legacy board connections are cleaned during migration", () => {

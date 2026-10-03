@@ -60,7 +60,7 @@ test("players can manipulate cards and fully manage board connections", () => {
   const inactive = { id: "p2", active: false, isGM: false };
   const gm = { id: "gm", active: true, isGM: true };
   assert.equal(canModifyBoard(gm, "deleteCard", {}, {}), true);
-  assert.equal(canModifyBoard(player, "createCard", { cardType: "free" }), true);
+  assert.equal(canModifyBoard(player, "createCard", { cardType: "free" }), false);
   assert.equal(canModifyBoard(player, "createCard", { cardType: "actor" }), false);
   assert.equal(canModifyBoard(player, "createCard", { cardType: "document" }), false);
   assert.equal(canModifyBoard(player, "updateCard"), true);
