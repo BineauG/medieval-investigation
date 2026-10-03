@@ -16,13 +16,6 @@
       {{#each actors}}<option value="{{uuid}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}
     </select>
   </div>
-  {{else if isDocument}}
-  <div class="form-group">
-    <label for="mit-card-source">{{localize "medieval-investigation-toolkit.CardEditor.SourceUuid"}}</label>
-    <input id="mit-card-source" type="text" name="sourceUuid" value="{{card.sourceUuid}}" placeholder="Item.x / JournalEntry.x.JournalEntryPage.x">
-    {{#if sourceName}}<p class="hint">{{sourceName}}</p>{{/if}}
-    {{#if sourceMissing}}<p class="warning">{{localize "medieval-investigation-toolkit.Labels.MissingReference"}}</p>{{/if}}
-  </div>
   {{/if}}
   {{/if}}
   <div class="form-group">

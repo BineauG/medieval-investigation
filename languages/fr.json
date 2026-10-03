@@ -29,7 +29,6 @@
       "ReferenceImage": "Image de référence et fond",
       "ShowImage": "Afficher l’image",
       "ShowName": "Afficher le nom",
-      "SourceUuid": "Référence Foundry facultative (UUID)",
       "Tags": "Tags",
       "Title": "Carte d’enquête",
       "TitleOverride": "Titre local",
@@ -37,16 +36,10 @@
     },
     "CardTypes": {
       "Actor": "Acteur",
-      "Document": "Document",
-      "Free": "Note"
+      "Document": "Document"
     },
     "CardTags": {
       "Dead": "Mort"
-    },
-    "NoteEditor": {
-      "Title": "Modifier la note",
-      "Text": "Texte court",
-      "Hint": "Saisissez un ou deux mots, puis appuyez sur Entrée."
     },
     "Confirm": {
       "DeleteCardTitle": "Supprimer une carte reliée",
@@ -75,7 +68,6 @@
       "ActorCard": "Créer une carte Acteur",
       "Connections": "Créer ou gérer les connexions",
       "DocumentCard": "Créer une carte Document",
-      "FreeCard": "Créer une note",
       "RelationGraph": "Ouvrir le graphe de relations",
       "ToggleBoard": "Activer ou désactiver le panneau d’enquête"
     },
@@ -140,7 +132,6 @@
     "Labels": {
       "ContextMenu": "Menu contextuel",
       "MissingReference": "Référence manquante",
-      "NoteDefault": "NOTE",
       "UnknownIdentity": "Identité inconnue",
       "Untitled": "Sans titre"
     },
@@ -208,7 +199,7 @@
     "Settings": {
       "Assets": { "Name": "Assets du panneau", "Label": "Configurer les images", "Hint": "Choisissez des images depuis le FilePicker Foundry. Un champ vide conserve le rendu CSS/SVG intégré." },
       "AutoSaveGraph": { "Name": "Sauvegarde automatique du graphe", "Hint": "Enregistre le graphe après le délai configuré." },
-      "CardScale": { "Name": "Échelle globale des cartes", "Hint": "Facteur appliqué aux nouvelles cartes et au rendu du panneau." },
+      "CardScale": { "Name": "Taille initiale des cartes", "Hint": "Échelle appliquée uniquement aux nouvelles cartes du panneau." },
       "DebugLogging": { "Name": "Logs détaillés", "Hint": "Active les journaux de diagnostic préfixés du module." },
       "DeathOverlayOpacity": { "Name": "Opacité du tag Mort", "Hint": "Règle la transparence du crâne superposé aux portraits et aux tokens marqués Mort." },
       "DeathTagImage": { "Name": "Cachet du tag Mort", "Directory": "Déposez vos images de cachet Mort dans :" },
@@ -218,8 +209,6 @@
       "FactionOpacity": { "Name": "Opacité par défaut des factions", "Hint": "Opacité du fond des nouvelles factions." },
       "MinimumCardSize": { "Name": "Taille minimale des cartes", "Hint": "Largeur et hauteur minimales en pixels de scène." },
       "NodeSize": { "Name": "Taille par défaut des personnages", "Hint": "Largeur de départ d’un personnage déposé dans le graphe." },
-      "NoteBannerImage": { "Name": "Image du fanion de note", "Directory": "Déposez vos images de languette ou fanion dans :" },
-      "NoteTextDirection": { "Name": "Sens de lecture des notes", "Hint": "Choisit le côté vers lequel le lecteur incline la tête pour lire le texte vertical.", "Right": "Incliné vers la droite", "Left": "Incliné vers la gauche" },
       "ParchmentTexture": { "Name": "Texture de parchemin", "Directory": "Déposez vos images de parchemin dans :" },
       "PlayersCreateCards": { "Name": "Joueurs : créer des cartes", "Hint": "Autorise les joueurs à créer des cartes sur une scène panneau." },
       "PlayersCreateConnections": { "Name": "Joueurs : créer des connexions", "Hint": "Autorise les joueurs à créer, modifier et supprimer des ficelles." },
@@ -231,6 +220,7 @@
       "StringWidth": { "Name": "Épaisseur de ficelle", "Hint": "Épaisseur par défaut des nouvelles ficelles." },
       "UnknownActorImage": { "Name": "Silhouette générique", "Hint": "Image utilisée lorsque l’apparence d’un personnage est masquée." },
       "WaxSealImage": { "Name": "Image personnalisée du sceau", "Directory": "Déposez vos images de sceau dans :" },
+      "WaxSealScale": { "Name": "Taille des sceaux de cire", "Hint": "Échelle visuelle et interactive appliquée aux sceaux du panneau." },
       "AnonymizeUnauthorized": { "Name": "Anonymiser les documents interdits", "Hint": "Masque les informations privées dans le graphe lorsqu’un utilisateur ne peut pas observer la source. Les cases d’affichage d’une carte partagent explicitement son titre et son image." },
       "ConfirmDelete": { "Name": "Confirmer la suppression reliée", "Hint": "Demande confirmation avant de supprimer une carte possédant des ficelles." }
     },

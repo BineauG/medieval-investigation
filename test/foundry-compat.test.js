@@ -47,8 +47,8 @@ test("Foundry v13 FilePicker uses its registered implementation and creates nest
 
   assert.equal(applicationClasses().FilePicker, FilePickerImplementation);
   await ensureDataDirectory("assets/medieval-investigation-toolkit/pins");
-  await ensureDataDirectory("assets/medieval-investigation-toolkit/notes");
+  await ensureDataDirectory("assets/medieval-investigation-toolkit/parchments");
   assert.ok(FilePickerImplementation.directories.has("assets/medieval-investigation-toolkit"));
   assert.ok(FilePickerImplementation.directories.has("assets/medieval-investigation-toolkit/pins"));
-  assert.ok(FilePickerImplementation.directories.has("assets/medieval-investigation-toolkit/notes"));
+  assert.ok(FilePickerImplementation.directories.has("assets/medieval-investigation-toolkit/parchments"));
 });

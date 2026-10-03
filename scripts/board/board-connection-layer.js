@@ -1,8 +1,9 @@
-import { BOARD_PIN_SCALE, MODULE_ID } from "../constants.js";
+import { MODULE_ID } from "../constants.js";
 import { strokePath } from "../compatibility/pixi-graphics.js";
 import { boardController } from "./board-controller.js";
 import { BoardConnectionSheet } from "./board-connection-sheet.js";
 import { getSetting } from "../settings.js";
+import { boardPinSize } from "./board-pin.js";
 import {
   loadOptimizedTexture,
   MAX_DECORATION_TEXTURE_DIMENSION,
@@ -60,7 +61,7 @@ class BoardConnectionLayer {
     if (!canvas?.drawings || !globalThis.PIXI?.Container) return null;
     const container = new PIXI.Container();
     container.label = `${MODULE_ID}-strings`;
-    // Investigation Board renders yarn above note Drawings (z 0–2) and
+    // Investigation Board renders yarn above card Drawings (z 0–2) and
     // below the detached pins. A negative z-index can fall behind the layer.
     container.zIndex = 10;
     container.eventMode = "passive";
@@ -210,7 +211,7 @@ class BoardConnectionLayer {
     }
     const document = drawing.document || drawing;
     const width = Number(document.shape?.width ?? 0);
-    const size = Math.max(28, Math.min(52, width * 0.17)) * BOARD_PIN_SCALE;
+    const size = boardPinSize(width, getSetting("waxSealScale"));
     let entry = this.#pins.get(drawing.id);
     if (!entry || entry.container.destroyed) {
       const container = new PIXI.Container();

@@ -2,9 +2,9 @@ import {
   DEFAULT_EDGE_STYLE,
   DEFAULT_DEATH_OVERLAY_OPACITY,
   DEFAULT_FACTION_STYLE,
+  DEFAULT_WAX_SEAL_SCALE,
   DEFEATED_OVERLAY_IMAGE,
   MODULE_ID,
-  NOTE_ASSET_DIRECTORY,
   PARCHMENT_ASSET_DIRECTORY,
   PIN_ASSET_DIRECTORY,
   STRING_COLORS
@@ -19,6 +19,14 @@ function register(name, data) {
 
 export function registerSettings() {
   register("cardScale", { name: key("CardScale.Name"), hint: key("CardScale.Hint"), type: Number, default: 1, range: { min: 0.5, max: 2, step: 0.05 } });
+  register("waxSealScale", {
+    name: key("WaxSealScale.Name"),
+    hint: key("WaxSealScale.Hint"),
+    type: Number,
+    default: DEFAULT_WAX_SEAL_SCALE,
+    range: { min: 0.5, max: 2, step: 0.05 },
+    onChange: () => Hooks.callAll(`${MODULE_ID}.assetsChanged`)
+  });
   register("stringColor", {
     name: key("StringColor.Name"),
     hint: key("StringColor.Hint"),
@@ -31,14 +39,6 @@ export function registerSettings() {
   });
   register("stringWidth", { name: key("StringWidth.Name"), hint: key("StringWidth.Hint"), type: Number, default: 4, range: { min: 1, max: 12, step: 1 } });
   register("minimumCardSize", { name: key("MinimumCardSize.Name"), hint: key("MinimumCardSize.Hint"), type: Number, default: 120, range: { min: 80, max: 300, step: 10 } });
-  register("noteTextDirection", {
-    name: key("NoteTextDirection.Name"),
-    hint: key("NoteTextDirection.Hint"),
-    type: String,
-    default: "right",
-    choices: { right: key("NoteTextDirection.Right"), left: key("NoteTextDirection.Left") },
-    onChange: () => Hooks.callAll(`${MODULE_ID}.assetsChanged`)
-  });
   register("confirmDelete", { name: key("ConfirmDelete.Name"), hint: key("ConfirmDelete.Hint"), type: Boolean, default: true });
   register("nodeSize", { name: key("NodeSize.Name"), hint: key("NodeSize.Hint"), type: Number, default: 112, range: { min: 64, max: 220, step: 4 } });
   register("factionFill", { name: key("FactionFill.Name"), hint: key("FactionFill.Hint"), type: String, default: DEFAULT_FACTION_STYLE.fill });
@@ -50,7 +50,6 @@ export function registerSettings() {
 
   for (const [name, defaultValue] of [
     ["parchmentTexture", ""],
-    ["noteBannerImage", ""],
     ["waxSealImage", ""],
     ["unknownActorImage", `modules/${MODULE_ID}/assets/unknown-person.svg`]
   ]) {
@@ -94,14 +93,12 @@ export class AssetSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) 
     )));
     return {
       parchmentTexture: game.settings.get(MODULE_ID, "parchmentTexture"),
-      noteBannerImage: game.settings.get(MODULE_ID, "noteBannerImage"),
       waxSealImage: game.settings.get(MODULE_ID, "waxSealImage"),
       unknownActorImage: game.settings.get(MODULE_ID, "unknownActorImage"),
       deathOverlayImage: DEFEATED_OVERLAY_IMAGE,
       deathOverlayOpacity,
       deathOverlayOpacityPercent: Math.round(deathOverlayOpacity * 100),
       parchmentDirectory: PARCHMENT_ASSET_DIRECTORY,
-      noteDirectory: NOTE_ASSET_DIRECTORY,
       pinDirectory: PIN_ASSET_DIRECTORY
     };
   }
@@ -147,7 +144,7 @@ export class AssetSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) 
       data.deathOverlayOpacity ?? DEFAULT_DEATH_OVERLAY_OPACITY
     )));
     await Promise.all([
-      ...["parchmentTexture", "noteBannerImage", "waxSealImage", "unknownActorImage"].map(name => (
+      ...["parchmentTexture", "waxSealImage", "unknownActorImage"].map(name => (
         game.settings.set(MODULE_ID, name, String(data[name] || ""))
       )),
       game.settings.set(MODULE_ID, "deathOverlayOpacity", deathOverlayOpacity)
@@ -159,7 +156,7 @@ export class AssetSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) 
 export async function ensureCustomAssetDirectories() {
   if (!game.user?.isGM) return [];
   const created = [];
-  for (const directory of [PIN_ASSET_DIRECTORY, PARCHMENT_ASSET_DIRECTORY, NOTE_ASSET_DIRECTORY]) {
+  for (const directory of [PIN_ASSET_DIRECTORY, PARCHMENT_ASSET_DIRECTORY]) {
     created.push(await ensureDataDirectory(directory));
   }
   return created;

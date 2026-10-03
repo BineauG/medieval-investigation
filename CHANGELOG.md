@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.0 — 2026-10-03
+
+- Les sceaux de cire du panneau sont plus petits par défaut et disposent d’un nouveau réglage monde **Taille des sceaux de cire**, de 50 % à 200 %.
+- Les nouvelles cartes utilisent un format initial plus compact de 220 × 280 pixels. Le réglage **Taille initiale des cartes** reste disponible pour adapter cette base sans modifier les cartes existantes.
+- Le champ **Référence Foundry facultative (UUID)** est retiré de l’éditeur des cartes Document. Les références issues d’un dépôt restent conservées en interne et leur source peut toujours être ouverte.
+- Le type de carte Note, son outil, son éditeur, ses réglages, ses assets et sa police dédiée sont retirés. Lors de la migration vers le schéma de carte v3, les anciennes notes deviennent des cartes Document simples et conservent leur titre.
+
 ## 1.6.2 — 2026-08-14
 
 - L’éditeur de faction est simplifié aux cinq réglages essentiels : nom, forme fermée, couleur de fond, couleur de bordure et opacité. La description, les dimensions, l’épaisseur de bordure et l’aperçu sont retirés du formulaire.

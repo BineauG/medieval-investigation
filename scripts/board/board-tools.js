@@ -8,7 +8,6 @@ import { notifyGraphActorChanged, notifyGraphAssetsChanged, notifyGraphPageUpdat
 import { getSetting } from "../settings.js";
 import { confirmDialog } from "../compatibility/foundry-version.js";
 import { registerDocumentContextMenus } from "./document-context.js";
-import { createCardData } from "./board-data.js";
 import { clearOptimizedTextureCache } from "./image-texture-cache.js";
 
 function rootElement(html) {
@@ -69,22 +68,6 @@ export function registerBoardHooks() {
         visible: gmCanCreate(),
         onChange: (_event, active) => {
           if (active) openBoardCardSheet({ initial: { cardType: "document" }, position: boardPosition() });
-        }
-      });
-      addSceneTool(controls, "drawings", {
-        name: "mitFreeCard",
-        title: `${MODULE_ID}.Controls.FreeCard`,
-        icon: "fa-solid fa-bookmark",
-        button: true,
-        visible: true,
-        onChange: (_event, active) => {
-          if (!active) return;
-          const note = createCardData({
-            cardType: "free",
-            titleOverride: game.i18n.localize(`${MODULE_ID}.Labels.NoteDefault`),
-            showImage: false
-          }, { userId: game.user.id });
-          boardController.createCard(note, boardPosition()).catch(error => boardController.notifyError(error));
         }
       });
       addSceneTool(controls, "drawings", {

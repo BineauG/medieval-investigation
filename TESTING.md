@@ -14,7 +14,7 @@ La suite couvre : validation des cartes et connexions, migrations, rejet audio/v
 
 ## Statut des tests Foundry réels
 
-Une version antérieure du module a été chargée dans une session locale Foundry 13.351 + WFRP4e en tant que MJ. Les contrôles, formulaires, dossiers `pins` et `parchments`, FilePicker et bouton du graphe avaient été observés. Les changements 1.6.0 à 1.6.2 sont contrôlés hors ligne uniquement : Foundry n’a pas été lancé pour ces patchs. La file automatique, les mutations atomiques, les deltas de champs, les permissions, la détection de conflits, les cibles de relation personnage/faction, le panoramique au clic droit et la géométrie des liens courts sont testés unitairement ; le déplacement diffusé entre plusieurs navigateurs et le rendu final de l’éditeur simplifié restent à confirmer visuellement. Foundry v14 et le multijoueur ne sont pas installés ou validés dans cet environnement.
+Une version antérieure du module a été chargée dans une session locale Foundry 13.351 + WFRP4e en tant que MJ. Les contrôles, formulaires, dossiers `pins` et `parchments`, FilePicker et bouton du graphe avaient été observés. Les changements 1.6.0 à 1.7.0 sont contrôlés hors ligne uniquement : Foundry n’a pas été lancé pour ces versions. La file automatique, les mutations atomiques, les deltas de champs, les permissions, la détection de conflits, les cibles de relation personnage/faction, le panoramique au clic droit, la géométrie des liens courts, le redimensionnement des sceaux et la migration des anciennes notes sont testés unitairement ; le déplacement diffusé entre plusieurs navigateurs et le rendu final restent à confirmer visuellement. Foundry v14 et le multijoueur ne sont pas installés ou validés dans cet environnement.
 
 Légende : `À exécuter` signifie non testé dans une instance réelle ; `Partiel` précise la partie réellement observée.
 
@@ -36,23 +36,22 @@ Légende : `À exécuter` signifie non testé dans une instance réelle ; `Parti
 | Cacher une carte en tant que MJ | Carte, pin et ficelles invisibles au joueur, ensemble encore visible au MJ | À exécuter |
 | Cocher l’option dans la scène | Le flag `investigationBoard.enabled` est persistant et les outils apparaissent | À exécuter |
 | Utiliser le bouton de contrôle | L’état bascule sans masquer les outils de dessin natifs | À exécuter |
-| Créer Acteur/Document/Note | Trois `DrawingDocument` et flags carte v2 valides ; la Note apparaît sans formulaire préalable | À exécuter pour la Note 1.3.0 |
+| Créer Acteur/Document | Deux `DrawingDocument` avec flags carte v3 valides et format initial 220 × 280 avant adaptation éventuelle au ratio d’image | À exécuter |
 | Cocher le tag Mort | Cachet noir en bas, dimension maximale dans la zone libre, sans débordement ni chevauchement | À exécuter |
 | Changer l’asset Mort | Le cachet personnalisé remplace le SVG fourni sur toutes les cartes taguées | À exécuter |
-| Double-cliquer une Note | Éditeur à un champ ; Entrée enregistre un ou deux mots et ferme la fenêtre | À exécuter |
-| Redimensionner une Note | Fanion et texte vertical se réadaptent ; pin et ficelles suivent | À exécuter |
-| Changer le sens de lecture | Rotation droite par défaut, gauche si configurée, rafraîchissement du rendu | À exécuter |
+| Changer Taille des sceaux de cire | Les sceaux et leur zone interactive changent ensemble de 50 % à 200 %, sans déplacer leurs ficelles | Automatisé hors ligne ; à confirmer visuellement |
+| Migrer une ancienne Note | Elle devient une carte Document v3 simple, sans source ni texte libre, avec son titre conservé | Automatisé hors ligne ; à confirmer visuellement |
 | Déposer Actor, Item, Journal/Page | Carte générique au bon emplacement | À exécuter |
 | Choisir MP3/OGG/WAV/FLAC/M4A | Refus explicite, aucun Drawing créé | À exécuter |
 | Masquer nom puis portrait | Valeurs neutres côté joueur, indicateur discret côté MJ | À exécuter |
 | Modifier Actor source | Nom/image actualisés sauf surcharge locale | À exécuter |
 | Supprimer la source | Carte conservée, référence manquante, pas d’erreur | À exécuter |
 | Déplacer/redimensionner | Le fond image s’étire exactement avec la carte ; carte et sceau suivent ; taille minimale respectée | À exécuter |
-| Créer un Document sans/avec image | Parchemin générique sans choix ; image choisie comme fond complet, format initial au ratio naturel et titre superposé, sans champ descriptif | À exécuter |
+| Créer un Document sans/avec image | Parchemin générique sans choix ; image choisie comme fond complet, format initial au ratio naturel et titre superposé, sans champ descriptif ni référence UUID éditable | À exécuter |
 | Relier deux sceaux | Aperçu, ficelle courbe persistante, doublon refusé | À exécuter |
 | Maj + glisser entre deux sceaux | Aperçu en temps réel, création au relâchement, navigation libre après le geste | À exécuter |
 | Double-cliquer une carte | Éditeur du module seul, sans configuration native du Drawing ; champs Document non redondants | Partiel : éditeur et FilePicker réussis depuis les outils ; geste canevas à exécuter |
-| Ouvrir les paramètres d’assets | Les dossiers persistants de sceaux, parchemins, notes et tags sont proposés | Partiel : anciens dossiers créés et visibles ; dossier tags à exécuter |
+| Ouvrir les paramètres d’assets | Seuls les dossiers persistants de sceaux et parchemins sont proposés | Partiel : anciens dossiers créés et visibles |
 | Déplacer une carte reliée | Ficelles incidentes mises à jour pendant le mouvement | À exécuter |
 | Sélectionner/modifier/supprimer une connexion | Clic sur la courbe : surbrillance ; double-clic : palette des neuf couleurs, épaisseur et affaissement ; Suppr : suppression | À exécuter |
 | Supprimer carte reliée | Confirmation puis nettoyage de toutes les ficelles | À exécuter |

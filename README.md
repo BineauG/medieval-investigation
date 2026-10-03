@@ -51,20 +51,17 @@ L’état est conservé dans `flags.medieval-investigation-toolkit.investigation
 ### Créer les cartes
 
 - **Carte Acteur** : utiliser l’outil puis choisir un Actor accessible, ou déposer un Actor depuis le répertoire sur la scène.
-- **Carte Document** : utiliser l’outil et saisir un UUID, choisir un fichier image avec le FilePicker, ou déposer un Item, Journal/Page, Scene, RollTable, Macro, Cards ou autre document doté d’un UUID.
-- **Note** : cliquer sur l’outil crée immédiatement une languette verticale au centre de la scène. Elle contient un ou deux mots, possède un pin et se déplace, se redimensionne ou se relie comme les autres cartes.
+- **Carte Document** : utiliser l’outil et choisir un fichier image avec le FilePicker, ou déposer un Item, Journal/Page, Scene, RollTable, Macro, Cards ou autre document doté d’un UUID.
 
 Les Playlists, PlaylistSounds, AmbientSounds, types MIME audio et extensions audio courantes sont refusés avec un message explicite. La vidéo est également hors périmètre de cette version.
 
-Chaque carte est un `DrawingDocument` natif rendu par une sous-classe de `Drawing`, selon le modèle éprouvé par Investigation Board. Il n’existe plus de second renderer de cartes greffé au canevas. Le contenu visuel est enfant de la vraie surface `Drawing.shape` de Foundry : une carte non cachée reste donc visible par les joueurs quel que soit l’outil de canevas actif. Carte, pin et ficelles utilisent la même règle de visibilité ; une carte cachée ne révèle aucun de ces éléments aux joueurs et reste seulement visible par le MJ. Les déplacements, redimensionnements, rotation, visibilité et ordre suivent directement la couche de dessins. Le rendu réagit aux `renderFlags` de Foundry : le fond image est la surface opaque réelle de la carte et est étiré exactement à ses dimensions pendant le redimensionnement, sans bordure ni ombre ajoutée. Le portrait d’une carte Acteur conserve en revanche son ratio et reste entièrement visible. Pour une carte Document, l’image de référence choisie remplace tout le fond et le titre est dessiné par-dessus ; sans image choisie, le parchemin générique est utilisé. À la création ou après le choix d’une nouvelle image, le format initial de la carte reprend automatiquement le ratio naturel de cette image. Le redimensionnement manuel reste libre ensuite. Les cartes Acteur et Document n’ont aucun champ descriptif : le texte libre appartient exclusivement au fanion Note. Les sceaux vivent dans un conteneur global séparé afin que leur interaction ne déclenche jamais le déplacement du Drawing. Les métadonnées propres au module sont versionnées dans `drawing.flags.medieval-investigation-toolkit`; aucun document source complet n’est copié.
+Chaque carte est un `DrawingDocument` natif rendu par une sous-classe de `Drawing`, selon le modèle éprouvé par Investigation Board. Il n’existe plus de second renderer de cartes greffé au canevas. Le contenu visuel est enfant de la vraie surface `Drawing.shape` de Foundry : une carte non cachée reste donc visible par les joueurs quel que soit l’outil de canevas actif. Carte, pin et ficelles utilisent la même règle de visibilité ; une carte cachée ne révèle aucun de ces éléments aux joueurs et reste seulement visible par le MJ. Les déplacements, redimensionnements, rotation, visibilité et ordre suivent directement la couche de dessins. Le rendu réagit aux `renderFlags` de Foundry : le fond image est la surface opaque réelle de la carte et est étiré exactement à ses dimensions pendant le redimensionnement, sans bordure ni ombre ajoutée. Le portrait d’une carte Acteur conserve en revanche son ratio et reste entièrement visible. Pour une carte Document, l’image de référence choisie remplace tout le fond et le titre est dessiné par-dessus ; sans image choisie, le parchemin générique est utilisé. À la création ou après le choix d’une nouvelle image, le format initial de la carte reprend automatiquement le ratio naturel de cette image. Le redimensionnement manuel reste libre ensuite. Les cartes Acteur et Document n’ont aucun champ descriptif. Les sceaux vivent dans un conteneur global séparé afin que leur interaction ne déclenche jamais le déplacement du Drawing. Les métadonnées propres au module sont versionnées dans `drawing.flags.medieval-investigation-toolkit`; aucun document source complet n’est copié.
 
-Double-cliquer une carte ouvre exclusivement l’éditeur du module, sans afficher la configuration native du Drawing. Pour une carte Document, cet éditeur présente uniquement la référence Foundry facultative, le titre, l’image de fond, son aperçu et les options d’affichage. Le clic droit propose modification et ordre d’affichage à tous les utilisateurs ; l’ouverture de la source et la suppression restent réservées au MJ. La duplication des cartes n’est pas proposée. Le nom et l’image peuvent être surchargés ou masqués séparément. Une surcharge vide rétablit la valeur de la source. Cocher leur option d’affichage les partage explicitement sur le panneau avec les joueurs ; cela ne leur accorde jamais la permission d’ouvrir la fiche Foundry source.
+Double-cliquer une carte ouvre exclusivement l’éditeur du module, sans afficher la configuration native du Drawing. Pour une carte Document, cet éditeur présente uniquement le titre, l’image de fond, son aperçu et les options d’affichage ; la référence Foundry d’un document déposé reste interne et n’est plus éditable. Le clic droit propose modification et ordre d’affichage à tous les utilisateurs ; l’ouverture de la source, lorsqu’elle existe, et la suppression restent réservées au MJ. La duplication des cartes n’est pas proposée. Le nom et l’image peuvent être surchargés ou masqués séparément. Une surcharge vide rétablit la valeur de la source. Cocher leur option d’affichage les partage explicitement sur le panneau avec les joueurs ; cela ne leur accorde jamais la permission d’ouvrir la fiche Foundry source.
 
-Une note s’édite dans une fenêtre dédiée ne contenant qu’un champ court. Saisir un ou deux mots puis appuyer sur `Entrée` enregistre et ferme la fenêtre. Son texte noir utilise la police Almendra SC intégrée au module, est pivoté et se lit du haut vers le bas ; le réglage **Sens de lecture des notes** choisit une inclinaison vers la droite, utilisée par défaut, ou vers la gauche. Une image de fanion peut être choisie dans **Configurer les images**. Sans image, la note est un rectangle textile vertical. Les anciennes cartes Libres sont affichées selon ce nouveau format.
+Chaque carte possède une liste de tags extensible. Le premier choix disponible est **Mort** : il affiche un cachet de cire noir dans la zone inférieure libre. Sa taille est calculée à partir de l’espace restant afin de ne jamais sortir de la carte ni recouvrir le portrait ou le titre. Le cachet fourni peut être remplacé dans **Configurer les images**.
 
-Chaque carte possède une liste de tags extensible. Le premier choix disponible est **Mort** : il affiche un cachet de cire noir dans la zone inférieure libre. Sa taille est calculée à partir de l’espace restant afin de ne jamais sortir de la carte ni recouvrir le portrait, le titre ou le texte vertical d’une Note. Le cachet fourni peut être remplacé dans **Configurer les images**.
-
-Les pins de toutes les cartes utilisent une échelle visuelle et interactive augmentée de 30 % depuis la version 1.3.1.
+La taille initiale des cartes est plus compacte et reste configurable par le réglage monde **Taille initiale des cartes**. Les sceaux utilisent également une échelle visuelle et interactive configurable, avec un rendu par défaut plus petit.
 
 ### Créer les ficelles
 
@@ -96,9 +93,9 @@ Le graphe est collaboratif. Chaque création, modification, suppression ou dépl
 
 ## Permissions et synchronisation
 
-Le MJ dispose de toutes les fonctions. Sur une scène où le panneau d’enquête est actif, un joueur peut déplacer et redimensionner les cartes, changer leur ordre d’affichage et créer immédiatement une note libre. Aucun utilisateur ne dispose d’une action de duplication des cartes. Un joueur ne peut pas créer de carte Acteur ou Document, ouvrir la source liée ni supprimer une carte. Il peut en revanche créer, modifier, sélectionner et supprimer les ficelles exactement comme le MJ, par Maj + glisser, l’outil **Connexions**, le menu contextuel ou la touche Suppr. En double-cliquant une carte, il voit uniquement **Titre local** et le tag **Mort** et peut les modifier pour tout le monde.
+Le MJ dispose de toutes les fonctions. Sur une scène où le panneau d’enquête est actif, un joueur peut déplacer et redimensionner les cartes et changer leur ordre d’affichage. Aucun utilisateur ne dispose d’une action de duplication des cartes. Un joueur ne peut pas créer de carte, ouvrir la source liée ni supprimer une carte. Il peut en revanche créer, modifier, sélectionner et supprimer les ficelles exactement comme le MJ, par Maj + glisser, l’outil **Connexions**, le menu contextuel ou la touche Suppr. En double-cliquant une carte, il voit uniquement **Titre local** et le tag **Mort** et peut les modifier pour tout le monde.
 
-Une requête joueur est envoyée au premier MJ actif trié par identifiant. Ce client sert uniquement d’autorité technique : aucune confirmation, fenêtre d’approbation ou validation manuelle du MJ n’est demandée. L’opération autorisée est exécutée automatiquement. Le contrôleur vérifie l’utilisateur actif, la scène, le type de carte et les champs : une création joueur doit être une note libre, tandis que l’éditeur de carte reste limité à `titleOverride` et `tags`. Les déplacements, redimensionnements, changements d’ordre et toutes les opérations de ficelle autorisées passent par le même canal. Toutes les mutations finales utilisent les documents Foundry et sont donc rediffusées à tous.
+Une requête joueur est envoyée au premier MJ actif trié par identifiant. Ce client sert uniquement d’autorité technique : aucune confirmation, fenêtre d’approbation ou validation manuelle du MJ n’est demandée. L’opération autorisée est exécutée automatiquement. Le contrôleur vérifie l’utilisateur actif, la scène, le type de carte et les champs ; l’éditeur de carte joueur reste limité à `titleOverride` et `tags`. Les déplacements, redimensionnements, changements d’ordre et toutes les opérations de ficelle autorisées passent par le même canal. Toutes les mutations finales utilisent les documents Foundry et sont donc rediffusées à tous.
 
 Toutes les opérations reçues par l’autorité — joueurs et MJ compris — passent par une file unique et sont traitées dans leur ordre d’arrivée. Les éditeurs joueur transmettent seulement les champs réellement changés : des modifications simultanées du titre et du tag, ou de deux propriétés différentes d’une ficelle, se fusionnent. Si deux utilisateurs modifient la même propriété à partir d’une ancienne version, la seconde écriture est refusée avec un message clair ; il suffit de rouvrir l’éditeur. Aucun changement récent n’est ainsi écrasé silencieusement.
 
@@ -110,14 +107,14 @@ Limite de sécurité : le canal socket brut d’un module ne fournit pas au call
 
 Les réglages monde couvrent :
 
-- échelle et taille minimale des cartes ;
-- texture de parchemin, image de fanion, sens de lecture des notes, image de sceau, cachet Mort et silhouette via le FilePicker ;
+- taille initiale et taille minimale des cartes, ainsi que taille des sceaux ;
+- texture de parchemin, image de sceau, opacité du cachet Mort et silhouette via le FilePicker ;
 - couleur WFRP parmi neuf teintes et épaisseur des ficelles ;
 - confirmation de suppression ;
 - taille des personnages, style des factions et relations ;
 - anonymisation et logs de diagnostic.
 
-Au premier chargement par un MJ, le module crée quatre dossiers persistants dans les données Foundry : `assets/medieval-investigation-toolkit/pins` pour les sceaux, `assets/medieval-investigation-toolkit/parchments` pour les fonds/références, `assets/medieval-investigation-toolkit/notes` pour les languettes et fanions et `assets/medieval-investigation-toolkit/tags` pour les cachets de tags. Le menu **Configurer les images** ouvre directement ces dossiers pour choisir l’image globale de chaque type. La texture de parchemin ou de fanion sélectionnée est étirée aux dimensions exactes de la carte et constitue son unique surface opaque ; aucun beige, cadre ou ombre n’est superposé.
+Au premier chargement par un MJ, le module crée deux dossiers persistants dans les données Foundry : `assets/medieval-investigation-toolkit/pins` pour les sceaux et `assets/medieval-investigation-toolkit/parchments` pour les fonds/références. Le menu **Configurer les images** ouvre directement ces dossiers. La texture de parchemin sélectionnée est étirée aux dimensions exactes de la carte et constitue son unique surface opaque ; aucun beige, cadre ou ombre n’est superposé.
 
 ## API
 
@@ -125,7 +122,7 @@ Au premier chargement par un MJ, le module crée quatre dossiers persistants dan
 const api = game.modules.get("medieval-investigation-toolkit").api;
 
 await api.setBoardEnabled(canvas.scene, true);
-await api.createCard({ cardType: "free", titleOverride: "Témoin rouge" }, { x: 800, y: 500 });
+await api.createCard({ cardType: "document", titleOverride: "Témoin rouge", imageOverride: "worlds/monde/temoin.webp" }, { x: 800, y: 500 });
 await api.createConnection("drawingA", "drawingB", { color: "#7b1010", width: 4 });
 await api.deleteConnection("connectionId");
 await api.openRelationGraph();
@@ -137,7 +134,7 @@ const graph = await api.getActiveGraph();
 - cartes : flags versionnés de `DrawingDocument` ;
 - panneau et ficelles : un flag versionné de `Scene` ;
 - graphe : un flag versionné de `JournalEntryPage` ;
-- migrations : cartes v0/v1 vers v2, nettoyage des références structurelles cassées ;
+- migrations : cartes v0/v1/v2 vers v3, conversion des anciennes notes en cartes Document simples et nettoyage des références structurelles cassées ;
 - concurrence du graphe : mutations atomiques, file d’autorité, comparaison des champs modifiés et aperçus de déplacement non persistants.
 
 ## Limites connues

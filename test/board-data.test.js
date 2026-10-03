@@ -18,9 +18,10 @@ test("card data is normalized without copying a source document", () => {
   assert.equal(card.cardType, "actor");
   assert.equal(card.sourceUuid, "Actor.abc");
   assert.equal(card.createdBy, "u1");
-  assert.equal(card.text, "");
+  assert.equal(Object.hasOwn(card, "text"), false);
   assert.equal(Object.hasOwn(card, "source"), false);
-  assert.equal(createCardData({ cardType: "free", text: "indice" }).text, "indice");
+  assert.equal(createCardData({}).cardType, "document");
+  assert.equal(validateCardData({ kind: "board-card", cardType: "free" }).valid, false);
 });
 
 test("actor cards require a UUID", () => {
